@@ -1,0 +1,65 @@
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type Query {
+    searchVolunteers(request: SearchRequest): [Volunteer!]
+}
+
+type Mutation {
+    updateDonateOptions(request: AddDonateOptionRequest!): AddDonateOptionResponse
+}
+
+input AddDonateOptionRequest {
+    id: String
+    donateOptions: [DonateOptionInput]
+}
+
+type AddDonateOptionResponse {
+    volunteer: Volunteer
+}
+
+input SearchRequest {
+    city: String
+    activityTypes: [String!]
+    donateOptions: [String!]
+}
+
+type Volunteer {
+    id: String
+    name: String
+    activityTypes: [String]
+    donateOptions: [DonateOption!]
+}
+
+input DonateOptionInput {
+    type: DonateOptionType
+    options: [KeyValueInput!]
+}
+
+input KeyValueInput {
+    key: String
+    value: String
+}
+
+type DonateOption {
+    type: String
+    options: [KeyValue!]
+}
+
+type KeyValue {
+    key: String
+    value: String
+}
+
+enum DonateOptionType {
+    bitcoin,
+    bankCard,
+    westernUnion
+}
+
+type VolunteerActivityType {
+    id: String
+    title: String
+}
