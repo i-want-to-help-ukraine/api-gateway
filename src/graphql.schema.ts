@@ -20,8 +20,7 @@ export class AddDonateOptionRequest {
 
 export class SearchRequest {
     city?: Nullable<string>;
-    activityTypes?: Nullable<string[]>;
-    donateOptions?: Nullable<string[]>;
+    activityTypeIds?: Nullable<string[]>;
 }
 
 export class DonateOptionInput {
@@ -49,13 +48,14 @@ export class AddDonateOptionResponse {
 export class Volunteer {
     id?: Nullable<string>;
     name?: Nullable<string>;
-    activityTypes?: Nullable<Nullable<string>[]>;
+    activityTypes?: Nullable<VolunteerActivityType[]>;
     donateOptions?: Nullable<DonateOption[]>;
 }
 
 export class DonateOption {
-    type?: Nullable<string>;
-    options?: Nullable<KeyValue[]>;
+    id?: Nullable<string>;
+    type?: Nullable<DonateOptionType>;
+    values?: Nullable<KeyValue[]>;
 }
 
 export class KeyValue {

@@ -22,14 +22,13 @@ type AddDonateOptionResponse {
 
 input SearchRequest {
     city: String
-    activityTypes: [String!]
-    donateOptions: [String!]
+    activityTypeIds: [String!]
 }
 
 type Volunteer {
     id: String
     name: String
-    activityTypes: [String]
+    activityTypes: [VolunteerActivityType!]
     donateOptions: [DonateOption!]
 }
 
@@ -44,8 +43,9 @@ input KeyValueInput {
 }
 
 type DonateOption {
-    type: String
-    options: [KeyValue!]
+    id: String
+    type: DonateOptionType
+    values: [KeyValue!]
 }
 
 type KeyValue {
