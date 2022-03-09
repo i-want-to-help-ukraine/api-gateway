@@ -7,63 +7,77 @@
 
 /* tslint:disable */
 /* eslint-disable */
-export enum DonateOptionType {
-    bitcoin = "bitcoin",
-    bankCard = "bankCard",
-    westernUnion = "westernUnion"
+export class CreateVolunteerInput {
+    name: string;
 }
 
-export class AddDonateOptionRequest {
-    id?: Nullable<string>;
-    donateOptions?: Nullable<Nullable<DonateOptionInput>[]>;
+export class VolunteerByIdInput {
+    id: string;
 }
 
-export class SearchRequest {
-    city?: Nullable<string>;
-    activityTypeIds?: Nullable<string[]>;
-}
-
-export class DonateOptionInput {
-    type?: Nullable<DonateOptionType>;
-    options?: Nullable<KeyValueInput[]>;
-}
-
-export class KeyValueInput {
-    key?: Nullable<string>;
-    value?: Nullable<string>;
+export class SearchInput {
+    cityIds: string[];
+    activityTypeIds: string[];
+    paymentOptionIds: string[];
 }
 
 export abstract class IQuery {
-    abstract searchVolunteers(request?: Nullable<SearchRequest>): Nullable<Volunteer[]> | Promise<Nullable<Volunteer[]>>;
+    abstract cities(): Nullable<Nullable<City>[]> | Promise<Nullable<Nullable<City>[]>>;
+
+    abstract activities(): Nullable<Nullable<VolunteerActivity>[]> | Promise<Nullable<Nullable<VolunteerActivity>[]>>;
+
+    abstract socialProviders(): Nullable<Nullable<SocialProvider>[]> | Promise<Nullable<Nullable<SocialProvider>[]>>;
+
+    abstract paymentProviders(): Nullable<Nullable<PaymentProvider>[]> | Promise<Nullable<Nullable<PaymentProvider>[]>>;
+
+    abstract volunteersSearch(input?: Nullable<SearchInput>): Nullable<Nullable<Volunteer>[]> | Promise<Nullable<Nullable<Volunteer>[]>>;
+
+    abstract volunteerById(input: VolunteerByIdInput): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
 }
 
 export abstract class IMutation {
-    abstract updateDonateOptions(request: AddDonateOptionRequest): Nullable<AddDonateOptionResponse> | Promise<Nullable<AddDonateOptionResponse>>;
+    abstract createVolunteer(input?: Nullable<CreateVolunteerInput>): Nullable<Nullable<Volunteer>[]> | Promise<Nullable<Nullable<Volunteer>[]>>;
 }
 
-export class AddDonateOptionResponse {
+export class VolunteerResponse {
     volunteer?: Nullable<Volunteer>;
 }
 
 export class Volunteer {
+    id: string;
+    name: string;
+    cities: City[];
+    activities: VolunteerActivity[];
+    social: VolunteerSocial[];
+    payments: VolunteerPaymentOption[];
+}
+
+export class VolunteerPaymentOption {
+    id: string;
+    metadata: string;
+}
+
+export class VolunteerSocial {
+    id: string;
+    url: string;
+}
+
+export class VolunteerActivity {
+    id: string;
+    title: string;
+}
+
+export class City {
     id?: Nullable<string>;
-    name?: Nullable<string>;
-    activityTypes?: Nullable<VolunteerActivityType[]>;
-    donateOptions?: Nullable<DonateOption[]>;
+    title?: Nullable<string>;
 }
 
-export class DonateOption {
+export class PaymentProvider {
     id?: Nullable<string>;
-    type?: Nullable<DonateOptionType>;
-    values?: Nullable<KeyValue[]>;
+    title?: Nullable<string>;
 }
 
-export class KeyValue {
-    key?: Nullable<string>;
-    value?: Nullable<string>;
-}
-
-export class VolunteerActivityType {
+export class SocialProvider {
     id?: Nullable<string>;
     title?: Nullable<string>;
 }

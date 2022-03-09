@@ -4,62 +4,71 @@ schema {
 }
 
 type Query {
-    searchVolunteers(request: SearchRequest): [Volunteer!]
+    cities: [City]
+    activities: [VolunteerActivity]
+    socialProviders: [SocialProvider]
+    paymentProviders: [PaymentProvider]
+    volunteersSearch(input: SearchInput): [Volunteer]
+    volunteerById(input: VolunteerByIdInput!): Volunteer
 }
 
 type Mutation {
-    updateDonateOptions(request: AddDonateOptionRequest!): AddDonateOptionResponse
+    createVolunteer(input: CreateVolunteerInput): [Volunteer]
 }
 
-input AddDonateOptionRequest {
-    id: String
-    donateOptions: [DonateOptionInput]
+input CreateVolunteerInput {
+    name: String!
 }
 
-type AddDonateOptionResponse {
+input VolunteerByIdInput {
+    id: String!
+}
+
+type VolunteerResponse {
     volunteer: Volunteer
 }
 
-input SearchRequest {
-    city: String
-    activityTypeIds: [String!]
+input SearchInput {
+    cityIds: [String!]!
+    activityTypeIds: [String!]!
+    paymentOptionIds: [String!]!
 }
 
 type Volunteer {
+    id: String!
+    name: String!
+    cities: [City!]!
+    activities: [VolunteerActivity!]!
+    social: [VolunteerSocial!]!
+    payments: [VolunteerPaymentOption!]!
+}
+
+type VolunteerPaymentOption {
+    id: String!
+    metadata: String!
+}
+
+type VolunteerSocial {
+    id: String!
+    url: String!
+}
+
+type VolunteerActivity {
+    id: String!
+    title: String!
+}
+
+type City {
     id: String
-    name: String
-    activityTypes: [VolunteerActivityType!]
-    donateOptions: [DonateOption!]
+    title: String
 }
 
-input DonateOptionInput {
-    type: DonateOptionType
-    options: [KeyValueInput!]
-}
-
-input KeyValueInput {
-    key: String
-    value: String
-}
-
-type DonateOption {
+type PaymentProvider {
     id: String
-    type: DonateOptionType
-    values: [KeyValue!]
+    title: String
 }
 
-type KeyValue {
-    key: String
-    value: String
-}
-
-enum DonateOptionType {
-    bitcoin,
-    bankCard,
-    westernUnion
-}
-
-type VolunteerActivityType {
+type SocialProvider {
     id: String
     title: String
 }

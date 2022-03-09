@@ -5,7 +5,12 @@ import { getVolunteerPackage } from '../grpc-services.config';
 import { VolunteerDatasource } from './datasources/volunteer/volunteer.datasource';
 import { VolunteerServiceRPCClient } from '@i-want-to-help-ukraine/protobuf/types/volunteer-service';
 import { ApolloDriver } from '@nestjs/apollo';
-import { SearchVolunteersResolver } from './resolvers/search-volunteers/search-volunteers.resolver';
+import { VolunteersSearchResolver } from './resolvers/volunteers-search/volunteers-search.resolver';
+import { VolunteerByIdResolver } from './resolvers/volunteer-by-id/volunteer-by-id.resolver';
+import { CitiesResolver } from './resolvers/cities/cities.resolver';
+import { ActivitiesResolver } from './resolvers/activities/activities.resolver';
+import { SocialProvidersResolver } from './resolvers/social-providers/social-providers.resolver';
+import { PaymentProvidersResolver } from './resolvers/payment-providers/payment-providers.resolver';
 
 @Module({
   imports: [
@@ -37,6 +42,6 @@ import { SearchVolunteersResolver } from './resolvers/search-volunteers/search-v
     }),
   ],
   controllers: [],
-  providers: [SearchVolunteersResolver],
+  providers: [VolunteersSearchResolver, VolunteerByIdResolver, CitiesResolver, ActivitiesResolver, SocialProvidersResolver, PaymentProvidersResolver],
 })
 export class AppModule {}
