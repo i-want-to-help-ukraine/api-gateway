@@ -5,7 +5,7 @@ schema {
 
 type Query {
     cities: [City]
-    activities: [VolunteerActivity]
+    activities: [Activity]
     socialProviders: [SocialProvider]
     paymentProviders: [PaymentProvider]
     volunteersSearch(input: SearchInput): [Volunteer]
@@ -52,7 +52,7 @@ type Volunteer {
     id: String!
     name: String!
     cities: [City!]!
-    activities: [VolunteerActivity!]!
+    activities: [Activity!]!
     social: [VolunteerSocial!]!
     payments: [VolunteerPaymentOption!]!
 }
@@ -67,7 +67,7 @@ type VolunteerSocial {
     url: String!
 }
 
-type VolunteerActivity {
+type Activity {
     id: String!
     title: String!
 }

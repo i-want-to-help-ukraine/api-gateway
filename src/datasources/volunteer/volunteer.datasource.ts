@@ -4,8 +4,6 @@ import {
   VolunteerServiceRPCClient,
   VolunteerDto,
   CityDto,
-  ActivityDto,
-  PaymentProviderDto,
   VolunteerPaymentOptionDto,
   VolunteerSocialDto,
   CreateVolunteerDto,
@@ -13,11 +11,12 @@ import {
 import * as DataLoader from 'dataloader';
 import { lastValueFrom, map } from 'rxjs';
 import {
+  Activity,
+  City,
   CreateVolunteerInput,
-  CreateVolunteerSocialInput,
+  PaymentProvider,
   SearchInput,
   SocialProvider,
-  VolunteerActivity,
   VolunteerPaymentOption,
 } from '../../graphql.schema';
 
@@ -44,6 +43,38 @@ export class VolunteerDatasource extends DataSource {
     return this.volunteerLoader.load(id);
   }
 
+  getActivities(): Promise<Activity[]> {
+    return lastValueFrom(
+      this.volunteerServiceRPC
+        .getActivities({})
+        .pipe(map((response) => response.activities)),
+    );
+  }
+
+  getCities(): Promise<City[]> {
+    return lastValueFrom(
+      this.volunteerServiceRPC
+        .getCities({})
+        .pipe(map((response) => response.cities)),
+    );
+  }
+
+  getSocialProviders(): Promise<SocialProvider[]> {
+    return lastValueFrom(
+      this.volunteerServiceRPC
+        .getSocialProviders({})
+        .pipe(map((response) => response.socialProviders)),
+    );
+  }
+
+  getPaymentProviders(): Promise<PaymentProvider[]> {
+    return lastValueFrom(
+      this.volunteerServiceRPC
+        .getPaymentProviders({})
+        .pipe(map((response) => response.paymentProvider)),
+    );
+  }
+
   searchVolunteers(request: SearchInput): Promise<VolunteerDto[]> {
     const rpcRequest: SearchVolunteersDto = {
       cityIds: [],
@@ -58,50 +89,18 @@ export class VolunteerDatasource extends DataSource {
     );
   }
 
-  getCities(): Promise<CityDto[]> {
-    return lastValueFrom(
-      this.volunteerServiceRPC
-        .getCities({ ids: [] })
-        .pipe(map((response) => response.cities)),
-    );
-  }
-
-  getActivities(): Promise<ActivityDto[]> {
-    return lastValueFrom(
-      this.volunteerServiceRPC
-        .getActivities({ ids: [] })
-        .pipe(map((response) => response.activities)),
-    );
-  }
-
-  getSocialProviders(): Promise<SocialProvider[]> {
-    return lastValueFrom(
-      this.volunteerServiceRPC
-        .getSocialProviders({ ids: [] })
-        .pipe(map((response) => response.socialProviders)),
-    );
-  }
-
-  getPaymentProviders(): Promise<PaymentProviderDto[]> {
-    return lastValueFrom(
-      this.volunteerServiceRPC
-        .getPaymentProviders({ ids: [] })
-        .pipe(map((response) => response.paymentProvider)),
-    );
-  }
-
   getVolunteerCities(volunteerId: string): Promise<CityDto[]> {
     return lastValueFrom(
       this.volunteerServiceRPC
-        .getVolunteerCities({ volunteerId })
+        .getVolunteerCities({ volunteerIds: [volunteerId] })
         .pipe(map((response) => response.cities)),
     );
   }
 
-  getVolunteerActivities(volunteerId: string): Promise<VolunteerActivity[]> {
+  getVolunteerActivities(volunteerId: string): Promise<Activity[]> {
     return lastValueFrom(
       this.volunteerServiceRPC
-        .getVolunteerActivities({ volunteerId })
+        .getVolunteerActivities({ volunteerIds: [volunteerId] })
         .pipe(map((response) => response.activities)),
     );
   }
@@ -111,7 +110,7 @@ export class VolunteerDatasource extends DataSource {
   ): Promise<VolunteerPaymentOption[]> {
     return lastValueFrom(
       this.volunteerServiceRPC
-        .getVolunteerPaymentOptions({ volunteerId })
+        .getVolunteerPaymentOptions({ volunteerIds: [volunteerId] })
         .pipe(
           map((response) =>
             response.paymentOptions.map((paymentOption) =>
@@ -125,7 +124,7 @@ export class VolunteerDatasource extends DataSource {
   getVolunteerSocial(volunteerId: string): Promise<VolunteerSocialDto[]> {
     return lastValueFrom(
       this.volunteerServiceRPC
-        .getVolunteerSocial({ volunteerId })
+        .getVolunteerSocial({ volunteerIds: [volunteerId] })
         .pipe(map((response) => response.volunteerSocial)),
     );
   }

@@ -38,7 +38,7 @@ export class SearchInput {
 export abstract class IQuery {
     abstract cities(): Nullable<Nullable<City>[]> | Promise<Nullable<Nullable<City>[]>>;
 
-    abstract activities(): Nullable<Nullable<VolunteerActivity>[]> | Promise<Nullable<Nullable<VolunteerActivity>[]>>;
+    abstract activities(): Nullable<Nullable<Activity>[]> | Promise<Nullable<Nullable<Activity>[]>>;
 
     abstract socialProviders(): Nullable<Nullable<SocialProvider>[]> | Promise<Nullable<Nullable<SocialProvider>[]>>;
 
@@ -61,7 +61,7 @@ export class Volunteer {
     id: string;
     name: string;
     cities: City[];
-    activities: VolunteerActivity[];
+    activities: Activity[];
     social: VolunteerSocial[];
     payments: VolunteerPaymentOption[];
 }
@@ -76,7 +76,7 @@ export class VolunteerSocial {
     url: string;
 }
 
-export class VolunteerActivity {
+export class Activity {
     id: string;
     title: string;
 }

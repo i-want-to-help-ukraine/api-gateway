@@ -8,13 +8,16 @@ import {
 } from '@nestjs/graphql';
 import {
   City,
-  VolunteerActivity,
   VolunteerByIdInput,
   VolunteerPaymentOption,
   VolunteerSocial,
 } from '../../graphql.schema';
 import { IDatasource } from '../../datasources/datasource.interface';
-import { VolunteerDto } from '@i-want-to-help-ukraine/protobuf/types/volunteer-service';
+import {
+  ActivityDto,
+  CityDto,
+  VolunteerDto,
+} from '@i-want-to-help-ukraine/protobuf/types/volunteer-service';
 
 @Resolver('Volunteer')
 export class VolunteerResolver {
@@ -26,11 +29,11 @@ export class VolunteerResolver {
     return dataSources.volunteer.getVolunteer(input.id);
   }
 
-  @ResolveField('cities', () => City)
+  @ResolveField('cities')
   async cities(
     @Parent() volunteer: VolunteerDto,
     @Context('dataSources') dataSources: IDatasource,
-  ): Promise<City[]> {
+  ): Promise<(CityDto | Error | null)[]> {
     return dataSources.volunteer.getVolunteerCities(volunteer.id);
   }
 
@@ -38,7 +41,7 @@ export class VolunteerResolver {
   async activities(
     @Parent() volunteer: VolunteerDto,
     @Context('dataSources') dataSources: IDatasource,
-  ): Promise<VolunteerActivity[]> {
+  ): Promise<(ActivityDto | Error | null)[]> {
     return dataSources.volunteer.getVolunteerActivities(volunteer.id);
   }
 
