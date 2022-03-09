@@ -20,6 +20,18 @@ input CreateVolunteerInput {
     name: String!
     citiesIds: [String!]!
     activitiesIds: [String!]!
+    social: [CreateVolunteerSocialInput!]!
+    paymentOptions: [CreateVolunteerPaymentOptionInput!]!
+}
+
+input CreateVolunteerSocialInput {
+    url: String!
+    socialProviderId: String!
+}
+
+input CreateVolunteerPaymentOptionInput {
+    metadata: String!
+    paymentProviderId: String!
 }
 
 input VolunteerByIdInput {

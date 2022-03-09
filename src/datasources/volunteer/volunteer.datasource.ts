@@ -1,21 +1,24 @@
 import { DataSource } from 'apollo-datasource';
 import {
+  SearchVolunteersDto,
   VolunteerServiceRPCClient,
   VolunteerDto,
-  SearchVolunteersRequest,
   CityDto,
   ActivityDto,
   PaymentProviderDto,
   VolunteerPaymentOptionDto,
   VolunteerSocialDto,
+  CreateVolunteerDto,
 } from '@i-want-to-help-ukraine/protobuf/types/volunteer-service';
 import * as DataLoader from 'dataloader';
 import { lastValueFrom, map } from 'rxjs';
 import {
   CreateVolunteerInput,
+  CreateVolunteerSocialInput,
   SearchInput,
   SocialProvider,
   VolunteerActivity,
+  VolunteerPaymentOption,
 } from '../../graphql.schema';
 
 export class VolunteerDatasource extends DataSource {
@@ -42,7 +45,7 @@ export class VolunteerDatasource extends DataSource {
   }
 
   searchVolunteers(request: SearchInput): Promise<VolunteerDto[]> {
-    const rpcRequest: SearchVolunteersRequest = {
+    const rpcRequest: SearchVolunteersDto = {
       cityIds: [],
       activityIds: [],
       paymentOptionIds: [],
@@ -105,11 +108,17 @@ export class VolunteerDatasource extends DataSource {
 
   getVolunteerPaymentOptions(
     volunteerId: string,
-  ): Promise<VolunteerPaymentOptionDto[]> {
+  ): Promise<VolunteerPaymentOption[]> {
     return lastValueFrom(
       this.volunteerServiceRPC
         .getVolunteerPaymentOptions({ volunteerId })
-        .pipe(map((response) => response.paymentOptions)),
+        .pipe(
+          map((response) =>
+            response.paymentOptions.map((paymentOption) =>
+              this.mapVolunteerPaymentOption(paymentOption),
+            ),
+          ),
+        ),
     );
   }
 
@@ -124,10 +133,32 @@ export class VolunteerDatasource extends DataSource {
   async createVolunteer(
     input: CreateVolunteerInput,
   ): Promise<VolunteerDto | undefined> {
+    const createVolunteerDto: CreateVolunteerDto = {
+      name: input.name,
+      citiesIds: input.citiesIds,
+      activitiesIds: input.activitiesIds,
+      social: input.social.map((social) => ({
+        url: social.url,
+        socialProviderId: social.socialProviderId,
+      })),
+      paymentOptions: [],
+    };
+
     return lastValueFrom(
       this.volunteerServiceRPC
-        .createVolunteer(input)
+        .createVolunteer(createVolunteerDto)
         .pipe(map((response) => response.volunteer)),
     );
+  }
+
+  private mapVolunteerPaymentOption(
+    volunteerPayment: VolunteerPaymentOptionDto,
+  ): VolunteerPaymentOption {
+    const { id } = volunteerPayment;
+
+    return {
+      id,
+      metadata: '',
+    };
   }
 }

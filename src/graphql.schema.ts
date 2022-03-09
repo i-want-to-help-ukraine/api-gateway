@@ -11,6 +11,18 @@ export class CreateVolunteerInput {
     name: string;
     citiesIds: string[];
     activitiesIds: string[];
+    social: CreateVolunteerSocialInput[];
+    paymentOptions: CreateVolunteerPaymentOptionInput[];
+}
+
+export class CreateVolunteerSocialInput {
+    url: string;
+    socialProviderId: string;
+}
+
+export class CreateVolunteerPaymentOptionInput {
+    metadata: string;
+    paymentProviderId: string;
 }
 
 export class VolunteerByIdInput {
