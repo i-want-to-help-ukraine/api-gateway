@@ -9,15 +9,17 @@ type Query {
     socialProviders: [SocialProvider]
     paymentProviders: [PaymentProvider]
     volunteersSearch(input: SearchInput): [Volunteer]
-    volunteerById(input: VolunteerByIdInput!): Volunteer
+    volunteer(input: VolunteerByIdInput!): Volunteer
 }
 
 type Mutation {
-    createVolunteer(input: CreateVolunteerInput): [Volunteer]
+    createVolunteer(input: CreateVolunteerInput): Volunteer
 }
 
 input CreateVolunteerInput {
     name: String!
+    citiesIds: [String!]!
+    activitiesIds: [String!]!
 }
 
 input VolunteerByIdInput {
@@ -29,9 +31,9 @@ type VolunteerResponse {
 }
 
 input SearchInput {
-    cityIds: [String!]!
-    activityTypeIds: [String!]!
-    paymentOptionIds: [String!]!
+    citiesIds: [String]
+    activitiesIds: [String]
+    paymentOptionsIds: [String]
 }
 
 type Volunteer {

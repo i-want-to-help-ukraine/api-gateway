@@ -2,9 +2,9 @@ import { Context, Query, Resolver } from '@nestjs/graphql';
 import { IDatasource } from '../../datasources/datasource.interface';
 import { SocialProvider } from '../../graphql.schema';
 
-@Resolver()
+@Resolver('SocialProviders')
 export class SocialProvidersResolver {
-  @Query('socialProviders')
+  @Query()
   async socialProviders(
     @Context('dataSources') dataSources: IDatasource,
   ): Promise<SocialProvider[]> {

@@ -16,17 +16,17 @@ import {
 import { IDatasource } from '../../datasources/datasource.interface';
 import { VolunteerDto } from '@i-want-to-help-ukraine/protobuf/types/volunteer-service';
 
-@Resolver()
-export class VolunteerByIdResolver {
-  @Query('volunteerById')
-  async volunteerById(
-    @Args('request') request: VolunteerByIdInput,
+@Resolver('Volunteer')
+export class VolunteerResolver {
+  @Query()
+  async volunteer(
+    @Args('input') input: VolunteerByIdInput,
     @Context('dataSources') dataSources: IDatasource,
   ): Promise<VolunteerDto | null> {
-    return dataSources.volunteer.getVolunteer(request.id);
+    return dataSources.volunteer.getVolunteer(input.id);
   }
 
-  @ResolveField('cities')
+  @ResolveField('cities', () => City)
   async cities(
     @Parent() volunteer: VolunteerDto,
     @Context('dataSources') dataSources: IDatasource,

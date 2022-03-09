@@ -9,6 +9,8 @@
 /* eslint-disable */
 export class CreateVolunteerInput {
     name: string;
+    citiesIds: string[];
+    activitiesIds: string[];
 }
 
 export class VolunteerByIdInput {
@@ -16,9 +18,9 @@ export class VolunteerByIdInput {
 }
 
 export class SearchInput {
-    cityIds: string[];
-    activityTypeIds: string[];
-    paymentOptionIds: string[];
+    citiesIds?: Nullable<Nullable<string>[]>;
+    activitiesIds?: Nullable<Nullable<string>[]>;
+    paymentOptionsIds?: Nullable<Nullable<string>[]>;
 }
 
 export abstract class IQuery {
@@ -32,11 +34,11 @@ export abstract class IQuery {
 
     abstract volunteersSearch(input?: Nullable<SearchInput>): Nullable<Nullable<Volunteer>[]> | Promise<Nullable<Nullable<Volunteer>[]>>;
 
-    abstract volunteerById(input: VolunteerByIdInput): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
+    abstract volunteer(input: VolunteerByIdInput): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
 }
 
 export abstract class IMutation {
-    abstract createVolunteer(input?: Nullable<CreateVolunteerInput>): Nullable<Nullable<Volunteer>[]> | Promise<Nullable<Nullable<Volunteer>[]>>;
+    abstract createVolunteer(input?: Nullable<CreateVolunteerInput>): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
 }
 
 export class VolunteerResponse {

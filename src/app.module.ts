@@ -5,12 +5,13 @@ import { getVolunteerPackage } from '../grpc-services.config';
 import { VolunteerDatasource } from './datasources/volunteer/volunteer.datasource';
 import { VolunteerServiceRPCClient } from '@i-want-to-help-ukraine/protobuf/types/volunteer-service';
 import { ApolloDriver } from '@nestjs/apollo';
-import { VolunteersSearchResolver } from './resolvers/volunteers-search/volunteers-search.resolver';
-import { VolunteerByIdResolver } from './resolvers/volunteer-by-id/volunteer-by-id.resolver';
 import { CitiesResolver } from './resolvers/cities/cities.resolver';
 import { ActivitiesResolver } from './resolvers/activities/activities.resolver';
 import { SocialProvidersResolver } from './resolvers/social-providers/social-providers.resolver';
 import { PaymentProvidersResolver } from './resolvers/payment-providers/payment-providers.resolver';
+import { CreateVolunteerResolver } from './resolvers/create-volunteer/create-volunteer.resolver';
+import { VolunteerResolver } from './resolvers/volunteer/volunteer.resolver';
+import { VolunteersSearchResolver } from './resolvers/volunteers-search/volunteers-search.resolver';
 
 @Module({
   imports: [
@@ -42,6 +43,14 @@ import { PaymentProvidersResolver } from './resolvers/payment-providers/payment-
     }),
   ],
   controllers: [],
-  providers: [VolunteersSearchResolver, VolunteerByIdResolver, CitiesResolver, ActivitiesResolver, SocialProvidersResolver, PaymentProvidersResolver],
+  providers: [
+    CitiesResolver,
+    ActivitiesResolver,
+    SocialProvidersResolver,
+    PaymentProvidersResolver,
+    CreateVolunteerResolver,
+    VolunteerResolver,
+    VolunteersSearchResolver,
+  ],
 })
 export class AppModule {}

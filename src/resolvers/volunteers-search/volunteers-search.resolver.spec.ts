@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { VolunteersSearchResolver } from './search-volunteers.resolver';
+import { VolunteersSearchResolver } from './volunteers-search.resolver';
 
-describe('SearchVolunteersResolver', () => {
+describe('VolunteersSearchResolver', () => {
   let resolver: VolunteersSearchResolver;
 
   beforeEach(async () => {

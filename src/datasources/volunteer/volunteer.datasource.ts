@@ -5,7 +5,6 @@ import {
   SearchVolunteersRequest,
   CityDto,
   ActivityDto,
-  SocialProviderDto,
   PaymentProviderDto,
   VolunteerPaymentOptionDto,
   VolunteerSocialDto,
@@ -13,6 +12,7 @@ import {
 import * as DataLoader from 'dataloader';
 import { lastValueFrom, map } from 'rxjs';
 import {
+  CreateVolunteerInput,
   SearchInput,
   SocialProvider,
   VolunteerActivity,
@@ -42,12 +42,10 @@ export class VolunteerDatasource extends DataSource {
   }
 
   searchVolunteers(request: SearchInput): Promise<VolunteerDto[]> {
-    const { cityIds, activityTypeIds, paymentOptionIds } = request;
-
     const rpcRequest: SearchVolunteersRequest = {
-      cityIds: cityIds || [],
-      activityIds: activityTypeIds || [],
-      paymentOptionIds: paymentOptionIds || [],
+      cityIds: [],
+      activityIds: [],
+      paymentOptionIds: [],
     };
 
     return lastValueFrom(
@@ -120,6 +118,16 @@ export class VolunteerDatasource extends DataSource {
       this.volunteerServiceRPC
         .getVolunteerSocial({ volunteerId })
         .pipe(map((response) => response.volunteerSocial)),
+    );
+  }
+
+  async createVolunteer(
+    input: CreateVolunteerInput,
+  ): Promise<VolunteerDto | undefined> {
+    return lastValueFrom(
+      this.volunteerServiceRPC
+        .createVolunteer(input)
+        .pipe(map((response) => response.volunteer)),
     );
   }
 }
