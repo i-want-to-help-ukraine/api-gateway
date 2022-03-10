@@ -17,12 +17,13 @@ type Mutation {
 }
 
 input CreateVolunteerInput {
-    name: String!
-    citiesIds: [String!]!
-    activitiesIds: [String!]!
+    firstname: String!
+    lastname: String!
+    cityIds: [String!]!
+    activityIds: [String!]!
     social: [CreateVolunteerSocialInput!]!
     paymentOptions: [CreateVolunteerPaymentOptionInput!]!
-    contacts: [CreateVolunteerContact]
+    contacts: [CreateVolunteerContact!]
 }
 
 input CreateVolunteerSocialInput {

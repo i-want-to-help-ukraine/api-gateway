@@ -16,12 +16,13 @@ export enum VerificationStatus {
 }
 
 export class CreateVolunteerInput {
-    name: string;
-    citiesIds: string[];
-    activitiesIds: string[];
+    firstname: string;
+    lastname: string;
+    cityIds: string[];
+    activityIds: string[];
     social: CreateVolunteerSocialInput[];
     paymentOptions: CreateVolunteerPaymentOptionInput[];
-    contacts?: Nullable<Nullable<CreateVolunteerContact>[]>;
+    contacts?: Nullable<CreateVolunteerContact[]>;
 }
 
 export class CreateVolunteerSocialInput {

@@ -79,7 +79,6 @@ export class VolunteerDatasource extends DataSource {
     const rpcRequest: SearchVolunteersDto = {
       cityIds: [],
       activityIds: [],
-      paymentOptionIds: [],
     };
 
     return lastValueFrom(
@@ -133,14 +132,24 @@ export class VolunteerDatasource extends DataSource {
     input: CreateVolunteerInput,
   ): Promise<VolunteerDto | undefined> {
     const createVolunteerDto: CreateVolunteerDto = {
-      name: input.name,
-      citiesIds: input.citiesIds,
-      activitiesIds: input.activitiesIds,
+      firstname: input.firstname,
+      lastname: input.lastname,
+      cityIds: input.cityIds,
+      activityIds: input.activityIds,
       social: input.social.map((social) => ({
         url: social.url,
         socialProviderId: social.socialProviderId,
       })),
-      paymentOptions: [],
+      paymentOptions: input.paymentOptions.map((paymentOption) => ({
+        metadata: undefined,
+        paymentOptionId: paymentOption.paymentProviderId,
+      })),
+      contacts: input.contacts
+        ? input.contacts?.map((contact) => ({
+            metadata: undefined,
+            contactProviderId: contact.contactProviderId,
+          }))
+        : [],
     };
 
     return lastValueFrom(

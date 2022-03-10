@@ -7,7 +7,6 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import {
-  City,
   VolunteerByIdInput,
   VolunteerPaymentOption,
   VolunteerSocial,
