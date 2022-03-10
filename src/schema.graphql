@@ -22,6 +22,7 @@ input CreateVolunteerInput {
     activitiesIds: [String!]!
     social: [CreateVolunteerSocialInput!]!
     paymentOptions: [CreateVolunteerPaymentOptionInput!]!
+    contacts: [CreateVolunteerContact]
 }
 
 input CreateVolunteerSocialInput {
@@ -32,6 +33,11 @@ input CreateVolunteerSocialInput {
 input CreateVolunteerPaymentOptionInput {
     metadata: String!
     paymentProviderId: String!
+}
+
+input CreateVolunteerContact {
+    metadata: String!
+    contactProviderId: String!
 }
 
 input VolunteerByIdInput {
@@ -50,11 +56,31 @@ input SearchInput {
 
 type Volunteer {
     id: String!
-    name: String!
+    firstname: String!
+    lastname: String!
+    verificationStatus: String!
+    contacts: [String]
     cities: [City!]!
     activities: [Activity!]!
     social: [VolunteerSocial!]!
     payments: [VolunteerPaymentOption!]!
+}
+
+type Contact {
+    id: String!
+    type: ContactType!
+}
+
+type ContactType {
+    id: String!
+}
+
+enum VerificationStatus {
+    requested,
+    inProgress,
+    rejected,
+    verified,
+    banned
 }
 
 type VolunteerPaymentOption {

@@ -7,12 +7,21 @@
 
 /* tslint:disable */
 /* eslint-disable */
+export enum VerificationStatus {
+    requested = "requested",
+    inProgress = "inProgress",
+    rejected = "rejected",
+    verified = "verified",
+    banned = "banned"
+}
+
 export class CreateVolunteerInput {
     name: string;
     citiesIds: string[];
     activitiesIds: string[];
     social: CreateVolunteerSocialInput[];
     paymentOptions: CreateVolunteerPaymentOptionInput[];
+    contacts?: Nullable<Nullable<CreateVolunteerContact>[]>;
 }
 
 export class CreateVolunteerSocialInput {
@@ -23,6 +32,11 @@ export class CreateVolunteerSocialInput {
 export class CreateVolunteerPaymentOptionInput {
     metadata: string;
     paymentProviderId: string;
+}
+
+export class CreateVolunteerContact {
+    metadata: string;
+    contactProviderId: string;
 }
 
 export class VolunteerByIdInput {
@@ -59,11 +73,23 @@ export class VolunteerResponse {
 
 export class Volunteer {
     id: string;
-    name: string;
+    firstname: string;
+    lastname: string;
+    verificationStatus: string;
+    contacts?: Nullable<Nullable<string>[]>;
     cities: City[];
     activities: Activity[];
     social: VolunteerSocial[];
     payments: VolunteerPaymentOption[];
+}
+
+export class Contact {
+    id: string;
+    type: ContactType;
+}
+
+export class ContactType {
+    id: string;
 }
 
 export class VolunteerPaymentOption {
