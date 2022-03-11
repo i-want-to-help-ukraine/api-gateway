@@ -8,6 +8,6 @@ export class ActivitiesResolver {
   async activities(
     @Context('dataSources') dataSources: IDatasource,
   ): Promise<(ActivityDto | Error | null)[]> {
-    return dataSources.volunteer.getActivities();
+    return dataSources.volunteer.getActivities([]);
   }
 }

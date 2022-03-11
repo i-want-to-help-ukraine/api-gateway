@@ -77,30 +77,29 @@ export class Volunteer {
     firstname: string;
     lastname: string;
     verificationStatus: string;
-    contacts?: Nullable<Nullable<string>[]>;
     cities: City[];
     activities: Activity[];
     social: VolunteerSocial[];
     payments: VolunteerPaymentOption[];
+    contacts?: Nullable<Nullable<VolunteerContact>[]>;
 }
 
-export class Contact {
+export class VolunteerContact {
     id: string;
-    type: ContactType;
-}
-
-export class ContactType {
-    id: string;
+    metadata: string;
+    volunteerId: string;
 }
 
 export class VolunteerPaymentOption {
     id: string;
     metadata: string;
+    volunteerId: string;
 }
 
 export class VolunteerSocial {
     id: string;
     url: string;
+    volunteerId: string;
 }
 
 export class Activity {

@@ -60,38 +60,29 @@ type Volunteer {
     firstname: String!
     lastname: String!
     verificationStatus: String!
-    contacts: [String]
     cities: [City!]!
     activities: [Activity!]!
     social: [VolunteerSocial!]!
     payments: [VolunteerPaymentOption!]!
+    contacts: [VolunteerContact]
 }
 
-type Contact {
+type VolunteerContact {
     id: String!
-    type: ContactType!
-}
-
-type ContactType {
-    id: String!
-}
-
-enum VerificationStatus {
-    requested,
-    inProgress,
-    rejected,
-    verified,
-    banned
+    metadata: String!
+    volunteerId: String!
 }
 
 type VolunteerPaymentOption {
     id: String!
     metadata: String!
+    volunteerId: String!
 }
 
 type VolunteerSocial {
     id: String!
     url: String!
+    volunteerId: String!
 }
 
 type Activity {
@@ -112,4 +103,12 @@ type PaymentProvider {
 type SocialProvider {
     id: String
     title: String
+}
+
+enum VerificationStatus {
+    requested,
+    inProgress,
+    rejected,
+    verified,
+    banned
 }

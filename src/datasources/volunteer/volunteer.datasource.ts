@@ -3,10 +3,10 @@ import {
   SearchVolunteersDto,
   VolunteerServiceRPCClient,
   VolunteerDto,
-  CityDto,
   VolunteerPaymentOptionDto,
   VolunteerSocialDto,
   CreateVolunteerDto,
+  VolunteerContactDto,
 } from '@i-want-to-help-ukraine/protobuf/types/volunteer-service';
 import * as DataLoader from 'dataloader';
 import { lastValueFrom, map } from 'rxjs';
@@ -35,6 +35,94 @@ export class VolunteerDatasource extends DataSource {
     },
   );
 
+  private cityLoader = new DataLoader<string, City | null>(
+    async (ids: string[]) => {
+      const cities = await lastValueFrom(
+        this.volunteerServiceRPC
+          .getCities({ ids })
+          .pipe(map((response) => response.cities)),
+      );
+
+      return ids.map(
+        (cityId) => cities.find((city) => city.id === cityId) || null,
+      );
+    },
+  );
+
+  private activityLoader = new DataLoader<string, Activity | null>(
+    async (ids: string[]) => {
+      const volunteerActivities = await lastValueFrom(
+        this.volunteerServiceRPC
+          .getActivities({ ids })
+          .pipe(map((response) => response.activities)),
+      );
+
+      return ids.map(
+        (activityId) =>
+          volunteerActivities.find((activity) => activity.id === activityId) ||
+          null,
+      );
+    },
+  );
+
+  private volunteerSocialLoader = new DataLoader<
+    string,
+    VolunteerSocialDto | null
+  >(async (volunteerIds: string[]) => {
+    const volunteerSocial = await lastValueFrom(
+      this.volunteerServiceRPC
+        .getVolunteerSocial({ volunteerIds })
+        .pipe(map((response) => response.volunteerSocial)),
+    );
+
+    return volunteerIds.map(
+      (volunteerId) =>
+        volunteerSocial.find((social) => social.volunteerId === volunteerId) ||
+        null,
+    );
+  });
+
+  private volunteerPaymentOptionLoader = new DataLoader<
+    string,
+    VolunteerPaymentOption | null
+  >(async (volunteerIds: string[]) => {
+    const paymentOptions = await lastValueFrom(
+      this.volunteerServiceRPC
+        .getVolunteerPaymentOptions({ volunteerIds })
+        .pipe(
+          map((response) =>
+            response.paymentOptions.map((paymentOption) =>
+              this.mapVolunteerPaymentOption(paymentOption),
+            ),
+          ),
+        ),
+    );
+
+    return volunteerIds.map(
+      (volunteerId) =>
+        paymentOptions.find(
+          (paymentOption) => paymentOption.volunteerId === volunteerId,
+        ) || null,
+    );
+  });
+
+  private volunteerContactLoader = new DataLoader<
+    string,
+    VolunteerContactDto | null
+  >(async (volunteerIds: string[]) => {
+    const contacts = await lastValueFrom(
+      this.volunteerServiceRPC
+        .getVolunteerContacts({ volunteerIds })
+        .pipe(map((response) => response.contacts)),
+    );
+
+    return volunteerIds.map(
+      (volunteerId) =>
+        contacts.find((volunteer) => volunteer.volunteerId === volunteerId) ||
+        null,
+    );
+  });
+
   constructor(private volunteerServiceRPC: VolunteerServiceRPCClient) {
     super();
   }
@@ -43,18 +131,26 @@ export class VolunteerDatasource extends DataSource {
     return this.volunteerLoader.load(id);
   }
 
-  getActivities(): Promise<Activity[]> {
+  getActivities(ids: string[]): Promise<any[]> {
+    if (ids.length > 0) {
+      return this.activityLoader.loadMany(ids);
+    }
+
     return lastValueFrom(
       this.volunteerServiceRPC
-        .getActivities({})
+        .getActivities({ ids: [] })
         .pipe(map((response) => response.activities)),
     );
   }
 
-  getCities(): Promise<City[]> {
+  getCities(ids: string[]): Promise<any[]> {
+    if (ids.length > 0) {
+      return this.cityLoader.loadMany(ids);
+    }
+
     return lastValueFrom(
       this.volunteerServiceRPC
-        .getCities({})
+        .getCities({ ids: [] })
         .pipe(map((response) => response.cities)),
     );
   }
@@ -62,7 +158,7 @@ export class VolunteerDatasource extends DataSource {
   getSocialProviders(): Promise<SocialProvider[]> {
     return lastValueFrom(
       this.volunteerServiceRPC
-        .getSocialProviders({})
+        .getSocialProviders({ ids: [] })
         .pipe(map((response) => response.socialProviders)),
     );
   }
@@ -70,7 +166,7 @@ export class VolunteerDatasource extends DataSource {
   getPaymentProviders(): Promise<PaymentProvider[]> {
     return lastValueFrom(
       this.volunteerServiceRPC
-        .getPaymentProviders({})
+        .getPaymentProviders({ ids: [] })
         .pipe(map((response) => response.paymentProvider)),
     );
   }
@@ -88,44 +184,16 @@ export class VolunteerDatasource extends DataSource {
     );
   }
 
-  getVolunteerCities(volunteerId: string): Promise<CityDto[]> {
-    return lastValueFrom(
-      this.volunteerServiceRPC
-        .getVolunteerCities({ volunteerIds: [volunteerId] })
-        .pipe(map((response) => response.cities)),
-    );
+  getVolunteerPaymentOptions(volunteerIds: string[]): Promise<any[]> {
+    return this.volunteerPaymentOptionLoader.loadMany(volunteerIds);
   }
 
-  getVolunteerActivities(volunteerId: string): Promise<Activity[]> {
-    return lastValueFrom(
-      this.volunteerServiceRPC
-        .getVolunteerActivities({ volunteerIds: [volunteerId] })
-        .pipe(map((response) => response.activities)),
-    );
+  getVolunteerSocial(volunteerIds: string[]): Promise<any[]> {
+    return this.volunteerSocialLoader.loadMany(volunteerIds);
   }
 
-  getVolunteerPaymentOptions(
-    volunteerId: string,
-  ): Promise<VolunteerPaymentOption[]> {
-    return lastValueFrom(
-      this.volunteerServiceRPC
-        .getVolunteerPaymentOptions({ volunteerIds: [volunteerId] })
-        .pipe(
-          map((response) =>
-            response.paymentOptions.map((paymentOption) =>
-              this.mapVolunteerPaymentOption(paymentOption),
-            ),
-          ),
-        ),
-    );
-  }
-
-  getVolunteerSocial(volunteerId: string): Promise<VolunteerSocialDto[]> {
-    return lastValueFrom(
-      this.volunteerServiceRPC
-        .getVolunteerSocial({ volunteerIds: [volunteerId] })
-        .pipe(map((response) => response.volunteerSocial)),
-    );
+  getVolunteerContacts(volunteerIds: string[]): Promise<any[]> {
+    return this.volunteerContactLoader.loadMany(volunteerIds);
   }
 
   async createVolunteer(
@@ -162,11 +230,12 @@ export class VolunteerDatasource extends DataSource {
   private mapVolunteerPaymentOption(
     volunteerPayment: VolunteerPaymentOptionDto,
   ): VolunteerPaymentOption {
-    const { id } = volunteerPayment;
+    const { id, volunteerId } = volunteerPayment;
 
     return {
       id,
       metadata: '',
+      volunteerId,
     };
   }
 }
