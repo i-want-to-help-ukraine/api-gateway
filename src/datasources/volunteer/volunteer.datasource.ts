@@ -18,6 +18,7 @@ import {
   PaymentProvider,
   SearchInput,
   SocialProvider,
+  Volunteer,
   VolunteerContact,
   VolunteerPaymentOption,
   VolunteerSocial,
@@ -287,9 +288,20 @@ export class VolunteerDatasource extends DataSource {
   async createVolunteer(
     input: CreateVolunteerInput,
   ): Promise<VolunteerDto | undefined> {
-    const { firstName, lastName, cityIds, activityIds } = input;
+    const {
+      authId,
+      firstName,
+      lastName,
+      description,
+      organization,
+      cityIds,
+      activityIds,
+    } = input;
 
     const createVolunteerDto: CreateVolunteerDto = {
+      authId,
+      description,
+      organization,
       firstName,
       lastName,
       cityIds,
@@ -313,6 +325,14 @@ export class VolunteerDatasource extends DataSource {
     return lastValueFrom(
       this.volunteerServiceRPC
         .createVolunteer(createVolunteerDto)
+        .pipe(map((response) => response.volunteer)),
+    );
+  }
+
+  getVolunteerProfile(authId: string): Promise<VolunteerDto | undefined> {
+    return lastValueFrom(
+      this.volunteerServiceRPC
+        .getVolunteerAuthProfile({ authId })
         .pipe(map((response) => response.volunteer)),
     );
   }

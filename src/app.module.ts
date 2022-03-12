@@ -13,6 +13,8 @@ import { VolunteersSearchResolver } from './resolvers/volunteers-search/voluntee
 import { SocialProvidersResolver } from './resolvers/social-providers/social-providers.resolver';
 import { PaymentProvidersResolver } from './resolvers/payment-providers/payment-providers.resolver';
 import { ContactProvidersResolver } from './resolvers/contact-providers/contact-providers.resolver';
+import { ProfileResolver } from './resolvers/profile/profile.resolver';
+import { Auth0Service } from './services/auth0/auth0.service';
 
 @Module({
   imports: [
@@ -53,6 +55,8 @@ import { ContactProvidersResolver } from './resolvers/contact-providers/contact-
     SocialProvidersResolver,
     PaymentProvidersResolver,
     ContactProvidersResolver,
+    ProfileResolver,
+    Auth0Service,
   ],
 })
 export class AppModule {}
