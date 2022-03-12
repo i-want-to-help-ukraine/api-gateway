@@ -7,7 +7,6 @@ import { VolunteerServiceRPCClient } from '@i-want-to-help-ukraine/protobuf/type
 import { ApolloDriver } from '@nestjs/apollo';
 import { CitiesResolver } from './resolvers/cities/cities.resolver';
 import { ActivitiesResolver } from './resolvers/activities/activities.resolver';
-import { CreateVolunteerResolver } from './resolvers/create-volunteer/create-volunteer.resolver';
 import { VolunteerResolver } from './resolvers/volunteer/volunteer.resolver';
 import { VolunteersSearchResolver } from './resolvers/volunteers-search/volunteers-search.resolver';
 import { SocialProvidersResolver } from './resolvers/social-providers/social-providers.resolver';
@@ -15,6 +14,7 @@ import { PaymentProvidersResolver } from './resolvers/payment-providers/payment-
 import { ContactProvidersResolver } from './resolvers/contact-providers/contact-providers.resolver';
 import { ProfileResolver } from './resolvers/profile/profile.resolver';
 import { Auth0Service } from './services/auth0/auth0.service';
+import { CreateProfileResolver } from './resolvers/create-volunteer/create-profile.resolver';
 
 @Module({
   imports: [
@@ -49,7 +49,7 @@ import { Auth0Service } from './services/auth0/auth0.service';
   providers: [
     CitiesResolver,
     ActivitiesResolver,
-    CreateVolunteerResolver,
+    CreateProfileResolver,
     VolunteerResolver,
     VolunteersSearchResolver,
     SocialProvidersResolver,

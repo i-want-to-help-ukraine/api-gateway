@@ -14,11 +14,10 @@ import {
   Activity,
   City,
   ContactProvider,
-  CreateVolunteerInput,
+  CreateProfileInput,
   PaymentProvider,
   SearchInput,
   SocialProvider,
-  Volunteer,
   VolunteerContact,
   VolunteerPaymentOption,
   VolunteerSocial,
@@ -286,7 +285,7 @@ export class VolunteerDatasource extends DataSource {
   }
 
   async createVolunteer(
-    input: CreateVolunteerInput,
+    input: CreateProfileInput,
   ): Promise<VolunteerDto | undefined> {
     const {
       authId,

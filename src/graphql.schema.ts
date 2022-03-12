@@ -15,7 +15,7 @@ export enum VerificationStatus {
     banned = "banned"
 }
 
-export class CreateVolunteerInput {
+export class CreateProfileInput {
     authId: string;
     firstName: string;
     lastName: string;
@@ -72,7 +72,7 @@ export abstract class IQuery {
 }
 
 export abstract class IMutation {
-    abstract createVolunteer(input?: Nullable<CreateVolunteerInput>): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
+    abstract createProfile(input?: Nullable<CreateProfileInput>): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
 }
 
 export class VolunteerResponse {
