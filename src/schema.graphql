@@ -10,6 +10,7 @@ type Query {
     activities: [Activity]
     socialProviders: [SocialProvider]
     paymentProviders: [PaymentProvider]
+    contactProviders: [ContactProvider]
     volunteersSearch(input: SearchInput): [Volunteer]
     volunteer(input: VolunteerByIdInput!): Volunteer
 }
@@ -100,6 +101,11 @@ type City {
 }
 
 type PaymentProvider {
+    id: String!
+    title: String!
+}
+
+type ContactProvider {
     id: String!
     title: String!
 }

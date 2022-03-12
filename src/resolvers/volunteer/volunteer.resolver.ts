@@ -7,17 +7,15 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import {
+  Activity,
+  City,
   VolunteerByIdInput,
   VolunteerContact,
   VolunteerPaymentOption,
   VolunteerSocial,
 } from '../../graphql.schema';
 import { IDatasource } from '../../datasources/datasource.interface';
-import {
-  ActivityDto,
-  CityDto,
-  VolunteerDto,
-} from '@i-want-to-help-ukraine/protobuf/types/volunteer-service';
+import { VolunteerDto } from '@i-want-to-help-ukraine/protobuf/types/volunteer-service';
 
 @Resolver('Volunteer')
 export class VolunteerResolver {
@@ -33,7 +31,7 @@ export class VolunteerResolver {
   async cities(
     @Parent() volunteer: VolunteerDto,
     @Context('dataSources') dataSources: IDatasource,
-  ): Promise<(CityDto | Error | null)[]> {
+  ): Promise<(City | Error | null)[]> {
     return dataSources.volunteer.getCities(volunteer.cityIds);
   }
 
@@ -41,7 +39,7 @@ export class VolunteerResolver {
   async activities(
     @Parent() volunteer: VolunteerDto,
     @Context('dataSources') dataSources: IDatasource,
-  ): Promise<(ActivityDto | Error | null)[]> {
+  ): Promise<(Activity | Error | null)[]> {
     return dataSources.volunteer.getActivities(volunteer.activityIds);
   }
 
@@ -57,7 +55,7 @@ export class VolunteerResolver {
   async social(
     @Parent() volunteer: VolunteerDto,
     @Context('dataSources') dataSources: IDatasource,
-  ): Promise<VolunteerSocial[]> {
+  ): Promise<(VolunteerSocial | Error | null)[]> {
     return dataSources.volunteer.getVolunteerSocial([volunteer.id]);
   }
 
@@ -65,7 +63,7 @@ export class VolunteerResolver {
   async contacts(
     @Parent() volunteer: VolunteerDto,
     @Context('dataSources') dataSources: IDatasource,
-  ): Promise<VolunteerContact[]> {
+  ): Promise<(VolunteerContact | Error | null)[]> {
     return dataSources.volunteer.getVolunteerContacts([volunteer.id]);
   }
 }
