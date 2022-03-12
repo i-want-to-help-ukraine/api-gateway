@@ -59,6 +59,8 @@ export abstract class IQuery {
 
     abstract paymentProviders(): Nullable<Nullable<PaymentProvider>[]> | Promise<Nullable<Nullable<PaymentProvider>[]>>;
 
+    abstract contactProviders(): Nullable<Nullable<ContactProvider>[]> | Promise<Nullable<Nullable<ContactProvider>[]>>;
+
     abstract volunteersSearch(input?: Nullable<SearchInput>): Nullable<Nullable<Volunteer>[]> | Promise<Nullable<Nullable<Volunteer>[]>>;
 
     abstract volunteer(input: VolunteerByIdInput): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
@@ -119,12 +121,12 @@ export class PaymentProvider {
     title: string;
 }
 
-export class SocialProvider {
+export class ContactProvider {
     id: string;
     title: string;
 }
 
-export class ContactProvider {
+export class SocialProvider {
     id: string;
     title: string;
 }

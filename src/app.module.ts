@@ -12,6 +12,7 @@ import { VolunteerResolver } from './resolvers/volunteer/volunteer.resolver';
 import { VolunteersSearchResolver } from './resolvers/volunteers-search/volunteers-search.resolver';
 import { SocialProvidersResolver } from './resolvers/social-providers/social-providers.resolver';
 import { PaymentProvidersResolver } from './resolvers/payment-providers/payment-providers.resolver';
+import { ContactProvidersResolver } from './resolvers/contact-providers/contact-providers.resolver';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { PaymentProvidersResolver } from './resolvers/payment-providers/payment-
     VolunteersSearchResolver,
     SocialProvidersResolver,
     PaymentProvidersResolver,
+    ContactProvidersResolver,
   ],
 })
 export class AppModule {}

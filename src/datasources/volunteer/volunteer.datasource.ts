@@ -13,12 +13,14 @@ import { lastValueFrom, map } from 'rxjs';
 import {
   Activity,
   City,
+  ContactProvider,
   CreateVolunteerInput,
   PaymentProvider,
   SearchInput,
   SocialProvider,
   VolunteerContact,
   VolunteerPaymentOption,
+  VolunteerSocial,
 } from '../../graphql.schema';
 
 export class VolunteerDatasource extends DataSource {
@@ -101,6 +103,24 @@ export class VolunteerDatasource extends DataSource {
     );
   });
 
+  private contactProviderLoader = new DataLoader<
+    string,
+    ContactProvider | null
+  >(async (ids: string[]) => {
+    const contactProviders = await lastValueFrom(
+      this.volunteerServiceRPC
+        .getContactProviders({ ids })
+        .pipe(map((response) => response.contactProviders)),
+    );
+
+    return ids.map(
+      (contactProviderId) =>
+        contactProviders.find(
+          (contactProvider) => contactProvider.id === contactProviderId,
+        ) || null,
+    );
+  });
+
   private volunteerSocialLoader = new DataLoader<
     string,
     VolunteerSocialDto | null
@@ -173,7 +193,7 @@ export class VolunteerDatasource extends DataSource {
     return this.volunteerLoader.load(id);
   }
 
-  getActivities(ids: string[]): Promise<any[]> {
+  getActivities(ids: string[]): Promise<(Activity | Error | null)[]> {
     if (ids.length > 0) {
       return this.activityLoader.loadMany(ids);
     }
@@ -185,7 +205,7 @@ export class VolunteerDatasource extends DataSource {
     );
   }
 
-  getCities(ids: string[]): Promise<any[]> {
+  getCities(ids: string[]): Promise<(City | Error | null)[]> {
     if (ids.length > 0) {
       return this.cityLoader.loadMany(ids);
     }
@@ -221,6 +241,18 @@ export class VolunteerDatasource extends DataSource {
     );
   }
 
+  getContactProviders(ids: string[]): Promise<any[]> {
+    if (ids.length > 0) {
+      return this.contactProviderLoader.loadMany(ids);
+    }
+
+    return lastValueFrom(
+      this.volunteerServiceRPC
+        .getContactProviders({ ids: [] })
+        .pipe(map((response) => response.contactProviders)),
+    );
+  }
+
   searchVolunteers(request: SearchInput): Promise<VolunteerDto[]> {
     const rpcRequest: SearchVolunteersDto = {
       cityIds: [],
@@ -240,11 +272,15 @@ export class VolunteerDatasource extends DataSource {
     return this.volunteerPaymentOptionLoader.loadMany(volunteerIds);
   }
 
-  getVolunteerSocial(volunteerIds: string[]): Promise<any[]> {
+  getVolunteerSocial(
+    volunteerIds: string[],
+  ): Promise<(VolunteerSocial | Error | null)[]> {
     return this.volunteerSocialLoader.loadMany(volunteerIds);
   }
 
-  getVolunteerContacts(volunteerIds: string[]): Promise<any[]> {
+  getVolunteerContacts(
+    volunteerIds: string[],
+  ): Promise<(VolunteerContact | Error | null)[]> {
     return this.volunteerContactLoader.loadMany(volunteerIds);
   }
 
@@ -262,14 +298,10 @@ export class VolunteerDatasource extends DataSource {
         url: social.url,
         socialProviderId: social.socialProviderId,
       })),
-      paymentOptions: input.paymentOptions.map((paymentOption) => {
-        console.log(JSON.stringify(paymentOption.metadata));
-
-        return {
-          metadata: JSON.stringify(paymentOption.metadata),
-          paymentOptionId: paymentOption.paymentProviderId,
-        };
-      }),
+      paymentOptions: input.paymentOptions.map((paymentOption) => ({
+        metadata: JSON.stringify(paymentOption.metadata),
+        paymentOptionId: paymentOption.paymentProviderId,
+      })),
       contacts: input.contacts
         ? input.contacts?.map((contact) => ({
             metadata: JSON.stringify(contact.metadata),
