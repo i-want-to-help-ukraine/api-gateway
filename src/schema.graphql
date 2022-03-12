@@ -13,15 +13,19 @@ type Query {
     contactProviders: [ContactProvider]
     volunteersSearch(input: SearchInput): [Volunteer]
     volunteer(input: VolunteerByIdInput!): Volunteer
+    profile(input: VolunteerByIdInput!): Volunteer
 }
 
 type Mutation {
-    createVolunteer(input: CreateVolunteerInput): Volunteer
+    createProfile(input: CreateProfileInput): Volunteer
 }
 
-input CreateVolunteerInput {
+input CreateProfileInput {
+    authId: String!
     firstName: String!
     lastName: String!
+    description: String!
+    organization: String!
     cityIds: [String!]!
     activityIds: [String!]!
     social: [CreateVolunteerSocialInput!]!
@@ -62,6 +66,8 @@ type Volunteer {
     id: String!
     firstName: String!
     lastName: String!
+    description: String!
+    organization: String!
     verificationStatus: String!
     cities: [City!]!
     activities: [Activity!]!

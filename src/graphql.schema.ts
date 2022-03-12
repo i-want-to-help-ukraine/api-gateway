@@ -16,8 +16,11 @@ export enum VerificationStatus {
 }
 
 export class CreateVolunteerInput {
+    authId: string;
     firstName: string;
     lastName: string;
+    description: string;
+    organization: string;
     cityIds: string[];
     activityIds: string[];
     social: CreateVolunteerSocialInput[];
@@ -64,6 +67,8 @@ export abstract class IQuery {
     abstract volunteersSearch(input?: Nullable<SearchInput>): Nullable<Nullable<Volunteer>[]> | Promise<Nullable<Nullable<Volunteer>[]>>;
 
     abstract volunteer(input: VolunteerByIdInput): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
+
+    abstract profile(input: VolunteerByIdInput): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
 }
 
 export abstract class IMutation {
@@ -78,6 +83,8 @@ export class Volunteer {
     id: string;
     firstName: string;
     lastName: string;
+    description: string;
+    organization: string;
     verificationStatus: string;
     cities: City[];
     activities: Activity[];
