@@ -1,3 +1,5 @@
+scalar JSON
+
 schema {
     query: Query
     mutation: Mutation
@@ -17,8 +19,8 @@ type Mutation {
 }
 
 input CreateVolunteerInput {
-    firstname: String!
-    lastname: String!
+    firstName: String!
+    lastName: String!
     cityIds: [String!]!
     activityIds: [String!]!
     social: [CreateVolunteerSocialInput!]!
@@ -32,12 +34,12 @@ input CreateVolunteerSocialInput {
 }
 
 input CreateVolunteerPaymentOptionInput {
-    metadata: String!
+    metadata: JSON!
     paymentProviderId: String!
 }
 
 input CreateVolunteerContact {
-    metadata: String!
+    metadata: JSON!
     contactProviderId: String!
 }
 
@@ -57,8 +59,8 @@ input SearchInput {
 
 type Volunteer {
     id: String!
-    firstname: String!
-    lastname: String!
+    firstName: String!
+    lastName: String!
     verificationStatus: String!
     cities: [City!]!
     activities: [Activity!]!
@@ -69,20 +71,22 @@ type Volunteer {
 
 type VolunteerContact {
     id: String!
-    metadata: String!
-    volunteerId: String!
+    metadata: JSON!
+    volunteerId: String
 }
 
 type VolunteerPaymentOption {
     id: String!
-    metadata: String!
-    volunteerId: String!
+    metadata: JSON!
+    volunteerId: String
+    provider: PaymentProvider
 }
 
 type VolunteerSocial {
     id: String!
     url: String!
-    volunteerId: String!
+    volunteerId: String
+    provider: SocialProvider
 }
 
 type Activity {
@@ -91,18 +95,23 @@ type Activity {
 }
 
 type City {
-    id: String
-    title: String
+    id: String!
+    title: String!
 }
 
 type PaymentProvider {
-    id: String
-    title: String
+    id: String!
+    title: String!
 }
 
 type SocialProvider {
-    id: String
-    title: String
+    id: String!
+    title: String!
+}
+
+type ContactProvider {
+    id: String!
+    title: String!
 }
 
 enum VerificationStatus {

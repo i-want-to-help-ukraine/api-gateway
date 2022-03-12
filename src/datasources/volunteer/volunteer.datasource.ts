@@ -17,6 +17,7 @@ import {
   PaymentProvider,
   SearchInput,
   SocialProvider,
+  VolunteerContact,
   VolunteerPaymentOption,
 } from '../../graphql.schema';
 
@@ -65,6 +66,41 @@ export class VolunteerDatasource extends DataSource {
     },
   );
 
+  private socialProviderLoader = new DataLoader<string, SocialProvider | null>(
+    async (ids: string[]) => {
+      const socialProviders = await lastValueFrom(
+        this.volunteerServiceRPC
+          .getSocialProviders({ ids })
+          .pipe(map((response) => response.socialProviders)),
+      );
+
+      return ids.map(
+        (socialProviderId) =>
+          socialProviders.find(
+            (socialProvider) => socialProvider.id === socialProviderId,
+          ) || null,
+      );
+    },
+  );
+
+  private paymentProviderLoader = new DataLoader<
+    string,
+    PaymentProvider | null
+  >(async (ids: string[]) => {
+    const paymentProviders = await lastValueFrom(
+      this.volunteerServiceRPC
+        .getPaymentProviders({ ids })
+        .pipe(map((response) => response.paymentProvider)),
+    );
+
+    return ids.map(
+      (paymentProviderId) =>
+        paymentProviders.find(
+          (paymentProvider) => paymentProvider.id === paymentProviderId,
+        ) || null,
+    );
+  });
+
   private volunteerSocialLoader = new DataLoader<
     string,
     VolunteerSocialDto | null
@@ -108,12 +144,18 @@ export class VolunteerDatasource extends DataSource {
 
   private volunteerContactLoader = new DataLoader<
     string,
-    VolunteerContactDto | null
+    VolunteerContact | null
   >(async (volunteerIds: string[]) => {
     const contacts = await lastValueFrom(
       this.volunteerServiceRPC
         .getVolunteerContacts({ volunteerIds })
-        .pipe(map((response) => response.contacts)),
+        .pipe(
+          map((response) =>
+            response.contacts.map((contact) =>
+              this.mapVolunteerContact(contact),
+            ),
+          ),
+        ),
     );
 
     return volunteerIds.map(
@@ -155,7 +197,11 @@ export class VolunteerDatasource extends DataSource {
     );
   }
 
-  getSocialProviders(): Promise<SocialProvider[]> {
+  getSocialProviders(ids: string[]): Promise<any[]> {
+    if (ids.length > 0) {
+      return this.socialProviderLoader.loadMany(ids);
+    }
+
     return lastValueFrom(
       this.volunteerServiceRPC
         .getSocialProviders({ ids: [] })
@@ -163,7 +209,11 @@ export class VolunteerDatasource extends DataSource {
     );
   }
 
-  getPaymentProviders(): Promise<PaymentProvider[]> {
+  getPaymentProviders(ids: string[]): Promise<any[]> {
+    if (ids.length > 0) {
+      return this.paymentProviderLoader.loadMany(ids);
+    }
+
     return lastValueFrom(
       this.volunteerServiceRPC
         .getPaymentProviders({ ids: [] })
@@ -184,7 +234,9 @@ export class VolunteerDatasource extends DataSource {
     );
   }
 
-  getVolunteerPaymentOptions(volunteerIds: string[]): Promise<any[]> {
+  getVolunteerPaymentOptions(
+    volunteerIds: string[],
+  ): Promise<(VolunteerPaymentOption | Error | null)[]> {
     return this.volunteerPaymentOptionLoader.loadMany(volunteerIds);
   }
 
@@ -199,22 +251,28 @@ export class VolunteerDatasource extends DataSource {
   async createVolunteer(
     input: CreateVolunteerInput,
   ): Promise<VolunteerDto | undefined> {
+    const { firstName, lastName, cityIds, activityIds } = input;
+
     const createVolunteerDto: CreateVolunteerDto = {
-      firstname: input.firstname,
-      lastname: input.lastname,
-      cityIds: input.cityIds,
-      activityIds: input.activityIds,
+      firstName,
+      lastName,
+      cityIds,
+      activityIds,
       social: input.social.map((social) => ({
         url: social.url,
         socialProviderId: social.socialProviderId,
       })),
-      paymentOptions: input.paymentOptions.map((paymentOption) => ({
-        metadata: undefined,
-        paymentOptionId: paymentOption.paymentProviderId,
-      })),
+      paymentOptions: input.paymentOptions.map((paymentOption) => {
+        console.log(JSON.stringify(paymentOption.metadata));
+
+        return {
+          metadata: JSON.stringify(paymentOption.metadata),
+          paymentOptionId: paymentOption.paymentProviderId,
+        };
+      }),
       contacts: input.contacts
         ? input.contacts?.map((contact) => ({
-            metadata: undefined,
+            metadata: JSON.stringify(contact.metadata),
             contactProviderId: contact.contactProviderId,
           }))
         : [],
@@ -227,14 +285,26 @@ export class VolunteerDatasource extends DataSource {
     );
   }
 
-  private mapVolunteerPaymentOption(
-    volunteerPayment: VolunteerPaymentOptionDto,
-  ): VolunteerPaymentOption {
-    const { id, volunteerId } = volunteerPayment;
+  private mapVolunteerContact(
+    volunteerContact: VolunteerContactDto,
+  ): VolunteerContact {
+    const { id, metadata, volunteerId } = volunteerContact;
 
     return {
       id,
-      metadata: '',
+      metadata: JSON.parse(metadata),
+      volunteerId,
+    };
+  }
+
+  private mapVolunteerPaymentOption(
+    volunteerPayment: VolunteerPaymentOptionDto,
+  ): VolunteerPaymentOption {
+    const { id, metadata, volunteerId } = volunteerPayment;
+
+    return {
+      id,
+      metadata: JSON.parse(metadata),
       volunteerId,
     };
   }

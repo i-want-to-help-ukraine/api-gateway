@@ -16,8 +16,8 @@ export enum VerificationStatus {
 }
 
 export class CreateVolunteerInput {
-    firstname: string;
-    lastname: string;
+    firstName: string;
+    lastName: string;
     cityIds: string[];
     activityIds: string[];
     social: CreateVolunteerSocialInput[];
@@ -31,12 +31,12 @@ export class CreateVolunteerSocialInput {
 }
 
 export class CreateVolunteerPaymentOptionInput {
-    metadata: string;
+    metadata: JSON;
     paymentProviderId: string;
 }
 
 export class CreateVolunteerContact {
-    metadata: string;
+    metadata: JSON;
     contactProviderId: string;
 }
 
@@ -74,8 +74,8 @@ export class VolunteerResponse {
 
 export class Volunteer {
     id: string;
-    firstname: string;
-    lastname: string;
+    firstName: string;
+    lastName: string;
     verificationStatus: string;
     cities: City[];
     activities: Activity[];
@@ -86,20 +86,22 @@ export class Volunteer {
 
 export class VolunteerContact {
     id: string;
-    metadata: string;
-    volunteerId: string;
+    metadata: JSON;
+    volunteerId?: Nullable<string>;
 }
 
 export class VolunteerPaymentOption {
     id: string;
-    metadata: string;
-    volunteerId: string;
+    metadata: JSON;
+    volunteerId?: Nullable<string>;
+    provider?: Nullable<PaymentProvider>;
 }
 
 export class VolunteerSocial {
     id: string;
     url: string;
-    volunteerId: string;
+    volunteerId?: Nullable<string>;
+    provider?: Nullable<SocialProvider>;
 }
 
 export class Activity {
@@ -108,18 +110,24 @@ export class Activity {
 }
 
 export class City {
-    id?: Nullable<string>;
-    title?: Nullable<string>;
+    id: string;
+    title: string;
 }
 
 export class PaymentProvider {
-    id?: Nullable<string>;
-    title?: Nullable<string>;
+    id: string;
+    title: string;
 }
 
 export class SocialProvider {
-    id?: Nullable<string>;
-    title?: Nullable<string>;
+    id: string;
+    title: string;
 }
 
+export class ContactProvider {
+    id: string;
+    title: string;
+}
+
+export type JSON = any;
 type Nullable<T> = T | null;

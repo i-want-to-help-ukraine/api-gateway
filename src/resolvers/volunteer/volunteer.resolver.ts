@@ -49,7 +49,7 @@ export class VolunteerResolver {
   async payments(
     @Parent() volunteer: VolunteerDto,
     @Context('dataSources') dataSources: IDatasource,
-  ): Promise<VolunteerPaymentOption[]> {
+  ): Promise<(VolunteerPaymentOption | Error | null)[]> {
     return dataSources.volunteer.getVolunteerPaymentOptions([volunteer.id]);
   }
 

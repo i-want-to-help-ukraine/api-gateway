@@ -1,13 +1,10 @@
 import { Context, Query, Resolver } from '@nestjs/graphql';
 import { IDatasource } from '../../datasources/datasource.interface';
-import { PaymentProvider } from '../../graphql.schema';
 
-@Resolver()
+@Resolver('PaymentProviders')
 export class PaymentProvidersResolver {
-  @Query('paymentProviders')
-  async paymentProviders(
-    @Context('dataSources') dataSources: IDatasource,
-  ): Promise<PaymentProvider[]> {
-    return dataSources.volunteer.getPaymentProviders();
+  @Query()
+  async paymentProviders(@Context('dataSources') dataSources: IDatasource) {
+    return dataSources.volunteer.getPaymentProviders([]);
   }
 }
