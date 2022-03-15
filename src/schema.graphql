@@ -18,6 +18,8 @@ type Query {
 
 type Mutation {
     createProfile(input: CreateProfileInput): Volunteer
+    updateProfile(input: UpdateProfileInput): Volunteer
+    hideProfile(input: HideProfileInput): Volunteer
 }
 
 input CreateProfileInput {
@@ -30,7 +32,25 @@ input CreateProfileInput {
     activityIds: [String!]!
     social: [CreateVolunteerSocialInput!]!
     paymentOptions: [CreateVolunteerPaymentOptionInput!]!
-    contacts: [CreateVolunteerContact!]
+    contacts: [CreateVolunteerContactInput!]
+}
+
+input UpdateProfileInput {
+    volunteerId: String!
+    firstName: String
+    lastName: String
+    description: String
+    organization: String
+    cityIds: [String!]
+    activityIds: [String!]
+    social: CreateOrDeleteVolunteerSocialInput
+    contacts: CreateOrDeleteVolunteerContactInput
+    paymentOptions: CreateOrDeleteVolunteerPaymentOptionInput
+}
+
+input CreateOrDeleteVolunteerSocialInput {
+    create: [CreateVolunteerSocialInput!]
+    delete: [String!]
 }
 
 input CreateVolunteerSocialInput {
@@ -38,14 +58,28 @@ input CreateVolunteerSocialInput {
     socialProviderId: String!
 }
 
+input CreateOrDeleteVolunteerContactInput {
+    create: [CreateVolunteerContactInput!]
+    delete: [String!]
+}
+
+input CreateVolunteerContactInput {
+    metadata: JSON!
+    contactProviderId: String!
+}
+
+input CreateOrDeleteVolunteerPaymentOptionInput {
+    create: [CreateVolunteerPaymentOptionInput!]
+    delete: [String!]
+}
+
 input CreateVolunteerPaymentOptionInput {
     metadata: JSON!
     paymentProviderId: String!
 }
 
-input CreateVolunteerContact {
-    metadata: JSON!
-    contactProviderId: String!
+input HideProfileInput {
+    volunteerId: String!
 }
 
 input VolunteerByIdInput {
@@ -107,11 +141,6 @@ type City {
 }
 
 type PaymentProvider {
-    id: String!
-    title: String!
-}
-
-type ContactProvider {
     id: String!
     title: String!
 }

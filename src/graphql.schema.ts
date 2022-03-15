@@ -25,7 +25,25 @@ export class CreateProfileInput {
     activityIds: string[];
     social: CreateVolunteerSocialInput[];
     paymentOptions: CreateVolunteerPaymentOptionInput[];
-    contacts?: Nullable<CreateVolunteerContact[]>;
+    contacts?: Nullable<CreateVolunteerContactInput[]>;
+}
+
+export class UpdateProfileInput {
+    volunteerId: string;
+    firstName?: Nullable<string>;
+    lastName?: Nullable<string>;
+    description?: Nullable<string>;
+    organization?: Nullable<string>;
+    cityIds?: Nullable<string[]>;
+    activityIds?: Nullable<string[]>;
+    social?: Nullable<CreateOrDeleteVolunteerSocialInput>;
+    contacts?: Nullable<CreateOrDeleteVolunteerContactInput>;
+    paymentOptions?: Nullable<CreateOrDeleteVolunteerPaymentOptionInput>;
+}
+
+export class CreateOrDeleteVolunteerSocialInput {
+    create?: Nullable<CreateVolunteerSocialInput[]>;
+    delete?: Nullable<string[]>;
 }
 
 export class CreateVolunteerSocialInput {
@@ -33,14 +51,28 @@ export class CreateVolunteerSocialInput {
     socialProviderId: string;
 }
 
+export class CreateOrDeleteVolunteerContactInput {
+    create?: Nullable<CreateVolunteerContactInput[]>;
+    delete?: Nullable<string[]>;
+}
+
+export class CreateVolunteerContactInput {
+    metadata: JSON;
+    contactProviderId: string;
+}
+
+export class CreateOrDeleteVolunteerPaymentOptionInput {
+    create?: Nullable<CreateVolunteerPaymentOptionInput[]>;
+    delete?: Nullable<string[]>;
+}
+
 export class CreateVolunteerPaymentOptionInput {
     metadata: JSON;
     paymentProviderId: string;
 }
 
-export class CreateVolunteerContact {
-    metadata: JSON;
-    contactProviderId: string;
+export class HideProfileInput {
+    volunteerId: string;
 }
 
 export class VolunteerByIdInput {
@@ -73,6 +105,10 @@ export abstract class IQuery {
 
 export abstract class IMutation {
     abstract createProfile(input?: Nullable<CreateProfileInput>): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
+
+    abstract updateProfile(input?: Nullable<UpdateProfileInput>): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
+
+    abstract hideProfile(input?: Nullable<HideProfileInput>): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
 }
 
 export class VolunteerResponse {
@@ -128,12 +164,12 @@ export class PaymentProvider {
     title: string;
 }
 
-export class ContactProvider {
+export class SocialProvider {
     id: string;
     title: string;
 }
 
-export class SocialProvider {
+export class ContactProvider {
     id: string;
     title: string;
 }

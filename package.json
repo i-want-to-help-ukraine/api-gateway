@@ -24,7 +24,7 @@
   "dependencies": {
     "@grpc/grpc-js": "^1.5.7",
     "@grpc/proto-loader": "^0.6.9",
-    "@i-want-to-help-ukraine/protobuf": "^1.0.35",
+    "@i-want-to-help-ukraine/protobuf": "^1.0.42",
     "@nestjs/apollo": "^10.0.6",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^1.2.0",
