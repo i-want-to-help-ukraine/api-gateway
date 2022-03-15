@@ -14,7 +14,9 @@ import { PaymentProvidersResolver } from './resolvers/payment-providers/payment-
 import { ContactProvidersResolver } from './resolvers/contact-providers/contact-providers.resolver';
 import { ProfileResolver } from './resolvers/profile/profile.resolver';
 import { Auth0Service } from './services/auth0/auth0.service';
-import { CreateProfileResolver } from './resolvers/create-volunteer/create-profile.resolver';
+import { UpdateProfileResolver } from './resolvers/update-profile/update-profile.resolver';
+import { HideProfileResolver } from './resolvers/hide-profile/hide-profile.resolver';
+import { CreateProfileResolver } from './resolvers/create-profile/create-profile.resolver';
 
 @Module({
   imports: [
@@ -57,6 +59,8 @@ import { CreateProfileResolver } from './resolvers/create-volunteer/create-profi
     ContactProvidersResolver,
     ProfileResolver,
     Auth0Service,
+    UpdateProfileResolver,
+    HideProfileResolver,
   ],
 })
 export class AppModule {}

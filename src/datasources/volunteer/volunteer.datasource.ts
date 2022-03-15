@@ -5,8 +5,9 @@ import {
   VolunteerDto,
   VolunteerPaymentOptionDto,
   VolunteerSocialDto,
-  CreateVolunteerDto,
   VolunteerContactDto,
+  CreateProfileDto,
+  UpdateProfileDto,
 } from '@i-want-to-help-ukraine/protobuf/types/volunteer-service';
 import * as DataLoader from 'dataloader';
 import { lastValueFrom, map } from 'rxjs';
@@ -15,9 +16,12 @@ import {
   City,
   ContactProvider,
   CreateProfileInput,
+  CreateVolunteerPaymentOptionInput,
+  HideProfileInput,
   PaymentProvider,
   SearchInput,
   SocialProvider,
+  UpdateProfileInput,
   VolunteerContact,
   VolunteerPaymentOption,
   VolunteerSocial,
@@ -269,19 +273,43 @@ export class VolunteerDatasource extends DataSource {
   getVolunteerPaymentOptions(
     volunteerIds: string[],
   ): Promise<(VolunteerPaymentOption | Error | null)[]> {
-    return this.volunteerPaymentOptionLoader.loadMany(volunteerIds);
+    return lastValueFrom(
+      this.volunteerServiceRPC
+        .getVolunteerPaymentOptions({ volunteerIds })
+        .pipe(
+          map((response) =>
+            response.paymentOptions.map((paymentOption) =>
+              this.mapVolunteerPaymentOption(paymentOption),
+            ),
+          ),
+        ),
+    );
   }
 
   getVolunteerSocial(
     volunteerIds: string[],
   ): Promise<(VolunteerSocial | Error | null)[]> {
-    return this.volunteerSocialLoader.loadMany(volunteerIds);
+    return lastValueFrom(
+      this.volunteerServiceRPC
+        .getVolunteerSocial({ volunteerIds })
+        .pipe(map((response) => response.volunteerSocial)),
+    );
   }
 
   getVolunteerContacts(
     volunteerIds: string[],
   ): Promise<(VolunteerContact | Error | null)[]> {
-    return this.volunteerContactLoader.loadMany(volunteerIds);
+    return lastValueFrom(
+      this.volunteerServiceRPC
+        .getVolunteerContacts({ volunteerIds })
+        .pipe(
+          map((response) =>
+            response.contacts.map((contact) =>
+              this.mapVolunteerContact(contact),
+            ),
+          ),
+        ),
+    );
   }
 
   async createVolunteer(
@@ -297,7 +325,7 @@ export class VolunteerDatasource extends DataSource {
       activityIds,
     } = input;
 
-    const createVolunteerDto: CreateVolunteerDto = {
+    const createProfileDto: CreateProfileDto = {
       authId,
       description,
       organization,
@@ -311,7 +339,7 @@ export class VolunteerDatasource extends DataSource {
       })),
       paymentOptions: input.paymentOptions.map((paymentOption) => ({
         metadata: JSON.stringify(paymentOption.metadata),
-        paymentOptionId: paymentOption.paymentProviderId,
+        paymentProviderId: paymentOption.paymentProviderId,
       })),
       contacts: input.contacts
         ? input.contacts?.map((contact) => ({
@@ -323,7 +351,68 @@ export class VolunteerDatasource extends DataSource {
 
     return lastValueFrom(
       this.volunteerServiceRPC
-        .createVolunteer(createVolunteerDto)
+        .createProfile(createProfileDto)
+        .pipe(map((response) => response.volunteer)),
+    );
+  }
+
+  updateProfile(
+    volunteerProfileId: string,
+    input: UpdateProfileInput,
+  ): Promise<VolunteerDto | undefined> {
+    const {
+      firstName,
+      lastName,
+      description,
+      organization,
+      cityIds,
+      activityIds,
+      social,
+      paymentOptions,
+      contacts,
+    } = input;
+
+    const updateProfileDto: UpdateProfileDto = {
+      id: volunteerProfileId,
+      firstName: firstName || undefined,
+      lastName: lastName || undefined,
+      description: description || undefined,
+      organization: organization || undefined,
+      cityIds: cityIds || [],
+      activityIds: activityIds || [],
+      social: {
+        create: social?.create || [],
+        delete: social?.delete || [],
+      },
+      paymentOptions: {
+        create:
+          paymentOptions?.create?.map((paymentOption) => ({
+            metadata: JSON.stringify(paymentOption.metadata),
+            paymentProviderId: paymentOption.paymentProviderId,
+          })) || [],
+        delete: paymentOptions?.delete || [],
+      },
+      contacts: {
+        create:
+          contacts?.create?.map((contact) => ({
+            metadata: JSON.stringify(contact.metadata),
+            contactProviderId: contact.contactProviderId,
+          })) || [],
+        delete: contacts?.delete || [],
+      },
+    };
+
+    return lastValueFrom(
+      this.volunteerServiceRPC
+        .updateProfile(updateProfileDto)
+        .pipe(map((response) => response.volunteer)),
+    );
+  }
+
+  hideProfile(input: HideProfileInput): Promise<VolunteerDto | undefined> {
+    return lastValueFrom(
+      this.volunteerServiceRPC
+        .hideProfile({ id: input.volunteerId })
         .pipe(map((response) => response.volunteer)),
     );
   }
@@ -334,6 +423,15 @@ export class VolunteerDatasource extends DataSource {
         .getVolunteerAuthProfile({ authId })
         .pipe(map((response) => response.volunteer)),
     );
+  }
+
+  private normalizePaymentOptionInput(
+    paymentOption: CreateVolunteerPaymentOptionInput,
+  ) {
+    return {
+      metadata: JSON.stringify(paymentOption.metadata),
+      paymentProviderId: paymentOption.paymentProviderId,
+    };
   }
 
   private mapVolunteerContact(
