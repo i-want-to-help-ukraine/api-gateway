@@ -8,11 +8,15 @@ schema {
 type Query {
     cities: [City]
     activities: [Activity]
+    socialProvider: SocialProvider
     socialProviders: [SocialProvider]
     paymentProviders: [PaymentProvider]
     contactProviders: [ContactProvider]
     volunteersSearch(input: SearchInput): [Volunteer]
     volunteer(input: VolunteerByIdInput!): Volunteer
+    volunteerSocial(input: VolunteerByIdInput!): VolunteerSocial
+    volunteerContact(input: VolunteerByIdInput!): VolunteerContact
+    volunteerPaymentOption(input: VolunteerByIdInput!): VolunteerPaymentOption
     profile(input: VolunteerByIdInput!): Volunteer
 }
 
@@ -113,20 +117,24 @@ type Volunteer {
 type VolunteerContact {
     id: String!
     metadata: JSON!
-    volunteerId: String
+    volunteerId: String!
+    providerId: String!
+    provider: ContactProvider
 }
 
 type VolunteerPaymentOption {
     id: String!
     metadata: JSON!
-    volunteerId: String
+    volunteerId: String!
+    providerId: String!
     provider: PaymentProvider
 }
 
 type VolunteerSocial {
     id: String!
     url: String!
-    volunteerId: String
+    volunteerId: String!
+    providerId: String!
     provider: SocialProvider
 }
 

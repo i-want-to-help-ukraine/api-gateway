@@ -221,19 +221,27 @@ export class VolunteerDatasource extends DataSource {
     );
   }
 
-  getSocialProviders(ids: string[]): Promise<any[]> {
+  getSocialProviders(
+    ids: string[],
+  ): Promise<(SocialProvider | Error | null)[]> {
     if (ids.length > 0) {
       return this.socialProviderLoader.loadMany(ids);
     }
 
     return lastValueFrom(
       this.volunteerServiceRPC
-        .getSocialProviders({ ids: [] })
+        .getSocialProviders({ ids })
         .pipe(map((response) => response.socialProviders)),
     );
   }
 
-  getPaymentProviders(ids: string[]): Promise<any[]> {
+  getSocialProvider(id: string): Promise<SocialProvider | null> {
+    return this.socialProviderLoader.load(id);
+  }
+
+  getPaymentProviders(
+    ids: string[],
+  ): Promise<(PaymentProvider | Error | null)[]> {
     if (ids.length > 0) {
       return this.paymentProviderLoader.loadMany(ids);
     }
@@ -245,7 +253,13 @@ export class VolunteerDatasource extends DataSource {
     );
   }
 
-  getContactProviders(ids: string[]): Promise<any[]> {
+  getPaymentProvider(id: string): Promise<PaymentProvider | null> {
+    return this.paymentProviderLoader.load(id);
+  }
+
+  getContactProviders(
+    ids: string[],
+  ): Promise<(ContactProvider | Error | null)[]> {
     if (ids.length > 0) {
       return this.contactProviderLoader.loadMany(ids);
     }
@@ -255,6 +269,10 @@ export class VolunteerDatasource extends DataSource {
         .getContactProviders({ ids: [] })
         .pipe(map((response) => response.contactProviders)),
     );
+  }
+
+  getContactProvider(id: string): Promise<ContactProvider | null> {
+    return this.contactProviderLoader.load(id);
   }
 
   searchVolunteers(request: SearchInput): Promise<VolunteerDto[]> {
@@ -425,36 +443,29 @@ export class VolunteerDatasource extends DataSource {
     );
   }
 
-  private normalizePaymentOptionInput(
-    paymentOption: CreateVolunteerPaymentOptionInput,
-  ) {
-    return {
-      metadata: JSON.stringify(paymentOption.metadata),
-      paymentProviderId: paymentOption.paymentProviderId,
-    };
-  }
-
   private mapVolunteerContact(
     volunteerContact: VolunteerContactDto,
   ): VolunteerContact {
-    const { id, metadata, volunteerId } = volunteerContact;
+    const { id, metadata, volunteerId, providerId } = volunteerContact;
 
     return {
       id,
       metadata: JSON.parse(metadata),
       volunteerId,
+      providerId,
     };
   }
 
   private mapVolunteerPaymentOption(
     volunteerPayment: VolunteerPaymentOptionDto,
   ): VolunteerPaymentOption {
-    const { id, metadata, volunteerId } = volunteerPayment;
+    const { id, metadata, volunteerId, providerId } = volunteerPayment;
 
     return {
       id,
       metadata: JSON.parse(metadata),
       volunteerId,
+      providerId,
     };
   }
 }

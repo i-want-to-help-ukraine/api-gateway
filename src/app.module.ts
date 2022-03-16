@@ -17,6 +17,10 @@ import { Auth0Service } from './services/auth0/auth0.service';
 import { UpdateProfileResolver } from './resolvers/update-profile/update-profile.resolver';
 import { HideProfileResolver } from './resolvers/hide-profile/hide-profile.resolver';
 import { CreateProfileResolver } from './resolvers/create-profile/create-profile.resolver';
+import { SocialProviderResolver } from './resolvers/social-provider/social-provider.resolver';
+import { VolunteerSocialResolver } from './resolvers/volunteer-social/volunteer-social.resolver';
+import { VolunteerContactResolver } from './resolvers/volunteer-contact/volunteer-contact.resolver';
+import { VolunteerPaymentOptionResolver } from './resolvers/volunteer-payment-option/volunteer-payment-option.resolver';
 
 @Module({
   imports: [
@@ -54,6 +58,7 @@ import { CreateProfileResolver } from './resolvers/create-profile/create-profile
     CreateProfileResolver,
     VolunteerResolver,
     VolunteersSearchResolver,
+    SocialProviderResolver,
     SocialProvidersResolver,
     PaymentProvidersResolver,
     ContactProvidersResolver,
@@ -61,6 +66,9 @@ import { CreateProfileResolver } from './resolvers/create-profile/create-profile
     Auth0Service,
     UpdateProfileResolver,
     HideProfileResolver,
+    VolunteerSocialResolver,
+    VolunteerContactResolver,
+    VolunteerPaymentOptionResolver,
   ],
 })
 export class AppModule {}
