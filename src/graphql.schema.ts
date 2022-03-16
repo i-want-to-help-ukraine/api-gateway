@@ -90,6 +90,8 @@ export abstract class IQuery {
 
     abstract activities(): Nullable<Nullable<Activity>[]> | Promise<Nullable<Nullable<Activity>[]>>;
 
+    abstract socialProvider(): Nullable<SocialProvider> | Promise<Nullable<SocialProvider>>;
+
     abstract socialProviders(): Nullable<Nullable<SocialProvider>[]> | Promise<Nullable<Nullable<SocialProvider>[]>>;
 
     abstract paymentProviders(): Nullable<Nullable<PaymentProvider>[]> | Promise<Nullable<Nullable<PaymentProvider>[]>>;
@@ -99,6 +101,12 @@ export abstract class IQuery {
     abstract volunteersSearch(input?: Nullable<SearchInput>): Nullable<Nullable<Volunteer>[]> | Promise<Nullable<Nullable<Volunteer>[]>>;
 
     abstract volunteer(input: VolunteerByIdInput): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
+
+    abstract volunteerSocial(input: VolunteerByIdInput): Nullable<VolunteerSocial> | Promise<Nullable<VolunteerSocial>>;
+
+    abstract volunteerContact(input: VolunteerByIdInput): Nullable<VolunteerContact> | Promise<Nullable<VolunteerContact>>;
+
+    abstract volunteerPaymentOption(input: VolunteerByIdInput): Nullable<VolunteerPaymentOption> | Promise<Nullable<VolunteerPaymentOption>>;
 
     abstract profile(input: VolunteerByIdInput): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
 }
@@ -132,20 +140,24 @@ export class Volunteer {
 export class VolunteerContact {
     id: string;
     metadata: JSON;
-    volunteerId?: Nullable<string>;
+    volunteerId: string;
+    providerId: string;
+    provider?: Nullable<ContactProvider>;
 }
 
 export class VolunteerPaymentOption {
     id: string;
     metadata: JSON;
-    volunteerId?: Nullable<string>;
+    volunteerId: string;
+    providerId: string;
     provider?: Nullable<PaymentProvider>;
 }
 
 export class VolunteerSocial {
     id: string;
     url: string;
-    volunteerId?: Nullable<string>;
+    volunteerId: string;
+    providerId: string;
     provider?: Nullable<SocialProvider>;
 }
 
