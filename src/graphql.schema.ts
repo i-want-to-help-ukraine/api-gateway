@@ -80,9 +80,8 @@ export class VolunteerByIdInput {
 }
 
 export class SearchInput {
-    citiesIds?: Nullable<Nullable<string>[]>;
-    activitiesIds?: Nullable<Nullable<string>[]>;
-    paymentOptionsIds?: Nullable<Nullable<string>[]>;
+    cityIds?: Nullable<string[]>;
+    activityIds?: Nullable<string[]>;
 }
 
 export abstract class IQuery {

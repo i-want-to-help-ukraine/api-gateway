@@ -276,9 +276,11 @@ export class VolunteerDatasource extends DataSource {
   }
 
   searchVolunteers(request: SearchInput): Promise<VolunteerDto[]> {
+    const { cityIds, activityIds } = request;
+
     const rpcRequest: SearchVolunteersDto = {
-      cityIds: [],
-      activityIds: [],
+      cityIds: cityIds || [],
+      activityIds: activityIds || [],
     };
 
     return lastValueFrom(

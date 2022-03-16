@@ -95,9 +95,8 @@ type VolunteerResponse {
 }
 
 input SearchInput {
-    citiesIds: [String]
-    activitiesIds: [String]
-    paymentOptionsIds: [String]
+    cityIds: [String!]
+    activityIds: [String!]
 }
 
 type Volunteer {
