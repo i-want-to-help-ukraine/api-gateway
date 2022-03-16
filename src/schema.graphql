@@ -17,7 +17,7 @@ type Query {
     volunteerSocial(input: VolunteerByIdInput!): VolunteerSocial
     volunteerContact(input: VolunteerByIdInput!): VolunteerContact
     volunteerPaymentOption(input: VolunteerByIdInput!): VolunteerPaymentOption
-    profile(input: VolunteerByIdInput!): Volunteer
+    profile: Volunteer
 }
 
 type Mutation {

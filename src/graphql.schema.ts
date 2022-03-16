@@ -107,7 +107,7 @@ export abstract class IQuery {
 
     abstract volunteerPaymentOption(input: VolunteerByIdInput): Nullable<VolunteerPaymentOption> | Promise<Nullable<VolunteerPaymentOption>>;
 
-    abstract profile(input: VolunteerByIdInput): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
+    abstract profile(): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
 }
 
 export abstract class IMutation {
