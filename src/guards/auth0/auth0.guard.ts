@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
-import { Auth0Service } from '../services/auth0/auth0.service';
+import { Auth0Service } from '../../services/auth0/auth0.service';
 
 @Injectable()
 export class Auth0Guard implements CanActivate {
@@ -20,13 +20,16 @@ export class Auth0Guard implements CanActivate {
       throw new UnauthorizedException();
     }
 
-    try {
-      const token = authHeader.replace('Bearer ', '');
-      request.userAuth = await this.auth0.isAuthenticated(token);
-      request.auth0Id = (await this.auth0.getUserProfile(token)).id;
-    } catch (e) {
+    const token = authHeader.replace('Bearer ', '');
+    const isAuthenticated = await this.auth0.isAuthenticated(token);
+
+    if (!isAuthenticated) {
       throw new UnauthorizedException();
     }
+
+    request.userAuth = {
+      authId: token,
+    };
 
     return true;
   }
