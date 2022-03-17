@@ -40,7 +40,6 @@ input CreateProfileInput {
 }
 
 input UpdateProfileInput {
-    volunteerId: String!
     firstName: String
     lastName: String
     description: String

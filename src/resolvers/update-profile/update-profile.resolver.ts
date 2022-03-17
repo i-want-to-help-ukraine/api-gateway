@@ -16,6 +16,6 @@ export class UpdateProfileResolver {
     @Context('dataSources') dataSources: IDatasource,
     @CurrentUser() currentUser: Auth0Payload,
   ): Promise<VolunteerDto | undefined> {
-    return dataSources.volunteer.updateProfile(input.volunteerId, input);
+    return dataSources.volunteer.updateProfile(currentUser.authId, input);
   }
 }
