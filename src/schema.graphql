@@ -12,7 +12,7 @@ type Query {
     socialProviders: [SocialProvider]
     paymentProviders: [PaymentProvider]
     contactProviders: [ContactProvider]
-    volunteersSearch(input: SearchInput): [Volunteer]
+    volunteersSearch(input: SearchInput): VolunteerSearchResponse
     volunteer(input: VolunteerByIdInput!): Volunteer
     volunteerSocial(input: VolunteerByIdInput!): VolunteerSocial
     volunteerContact(input: VolunteerByIdInput!): VolunteerContact
@@ -96,6 +96,25 @@ type VolunteerResponse {
 input SearchInput {
     cityIds: [String!]
     activityIds: [String!]
+    startCursor: String
+    offset: Int!
+}
+
+type VolunteerSearchResponse {
+    totalCount: Int!
+    startCursor: String
+    edges: [VolunteerSearchEdge!]!
+    pageInfo: PageInfo!
+}
+
+type VolunteerSearchEdge {
+    cursor: String!
+    node: Volunteer!
+}
+
+type PageInfo {
+    endCursor: String
+    hasNextPage: Boolean!
 }
 
 type Volunteer {
@@ -105,6 +124,8 @@ type Volunteer {
     description: String!
     organization: String!
     verificationStatus: String!
+    cityIds: [String!]!
+    activityIds: [String!]!
     cities: [City!]!
     activities: [Activity!]!
     social: [VolunteerSocial!]!

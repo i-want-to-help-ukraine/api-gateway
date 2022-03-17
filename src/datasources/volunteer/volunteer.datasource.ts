@@ -22,8 +22,11 @@ import {
   SearchInput,
   SocialProvider,
   UpdateProfileInput,
+  Volunteer,
   VolunteerContact,
   VolunteerPaymentOption,
+  VolunteerSearchEdge,
+  VolunteerSearchResponse,
   VolunteerSocial,
 } from '../../graphql.schema';
 
@@ -275,19 +278,52 @@ export class VolunteerDatasource extends DataSource {
     return this.contactProviderLoader.load(id);
   }
 
-  searchVolunteers(request: SearchInput): Promise<VolunteerDto[]> {
-    const { cityIds, activityIds } = request;
+  /**
+   * Pagination
+   * Validation
+   * Create domain email
+   * Create digital ocean account on the new email
+   * Setup staging env
+   * Setup production env with pm2 and database cluster
+   * Create RC branches
+   * Cypress tests against backend api
+   * https certificate
+   * */
+
+  async searchVolunteers(
+    request: SearchInput,
+  ): Promise<VolunteerSearchResponse> {
+    const { cityIds, activityIds, offset, startCursor } = request;
 
     const rpcRequest: SearchVolunteersDto = {
       cityIds: cityIds || [],
       activityIds: activityIds || [],
+      offset,
+      startCursor: startCursor || undefined,
     };
 
-    return lastValueFrom(
+    const searchResponse = await lastValueFrom(
       this.volunteerServiceRPC
         .search(rpcRequest)
-        .pipe(map((response) => response.volunteers)),
+        .pipe(map((response) => response)),
     );
+
+    const { volunteers, totalCount, endCursor, hasNextPage } = searchResponse;
+
+    const edges: VolunteerSearchEdge[] = volunteers.map((volunteer) => ({
+      cursor: volunteer.id,
+      node: this.mapVolunteer(volunteer),
+    }));
+
+    return {
+      totalCount,
+      startCursor,
+      edges,
+      pageInfo: {
+        endCursor,
+        hasNextPage,
+      },
+    };
   }
 
   getVolunteerPaymentOptions(
@@ -443,6 +479,35 @@ export class VolunteerDatasource extends DataSource {
         .getVolunteerAuthProfile({ authId })
         .pipe(map((response) => response.volunteer)),
     );
+  }
+
+  private mapVolunteer(volunteerDto: VolunteerDto): Volunteer {
+    const {
+      id,
+      firstName,
+      lastName,
+      description,
+      organization,
+      verificationStatus,
+      activityIds,
+      cityIds,
+    } = volunteerDto;
+
+    return {
+      id,
+      firstName,
+      lastName,
+      description,
+      organization,
+      verificationStatus,
+      activityIds,
+      cityIds,
+      cities: [],
+      activities: [],
+      social: [],
+      payments: [],
+      contacts: [],
+    };
   }
 
   private mapVolunteerContact(
