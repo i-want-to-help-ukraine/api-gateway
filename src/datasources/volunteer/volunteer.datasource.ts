@@ -278,18 +278,6 @@ export class VolunteerDatasource extends DataSource {
     return this.contactProviderLoader.load(id);
   }
 
-  /**
-   * Pagination
-   * Validation
-   * Create domain email
-   * Create digital ocean account on the new email
-   * Setup staging env
-   * Setup production env with pm2 and database cluster
-   * Create RC branches
-   * Cypress tests against backend api
-   * https certificate
-   * */
-
   async searchVolunteers(
     request: SearchInput,
   ): Promise<VolunteerSearchResponse> {
