@@ -81,6 +81,8 @@ export class VolunteerByIdInput {
 export class SearchInput {
     cityIds?: Nullable<string[]>;
     activityIds?: Nullable<string[]>;
+    startCursor?: Nullable<string>;
+    offset: number;
 }
 
 export abstract class IQuery {
@@ -96,7 +98,7 @@ export abstract class IQuery {
 
     abstract contactProviders(): Nullable<Nullable<ContactProvider>[]> | Promise<Nullable<Nullable<ContactProvider>[]>>;
 
-    abstract volunteersSearch(input?: Nullable<SearchInput>): Nullable<Nullable<Volunteer>[]> | Promise<Nullable<Nullable<Volunteer>[]>>;
+    abstract volunteersSearch(input?: Nullable<SearchInput>): Nullable<VolunteerSearchResponse> | Promise<Nullable<VolunteerSearchResponse>>;
 
     abstract volunteer(input: VolunteerByIdInput): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
 
@@ -121,6 +123,23 @@ export class VolunteerResponse {
     volunteer?: Nullable<Volunteer>;
 }
 
+export class VolunteerSearchResponse {
+    totalCount: number;
+    startCursor?: Nullable<string>;
+    edges: VolunteerSearchEdge[];
+    pageInfo: PageInfo;
+}
+
+export class VolunteerSearchEdge {
+    cursor: string;
+    node: Volunteer;
+}
+
+export class PageInfo {
+    endCursor?: Nullable<string>;
+    hasNextPage: boolean;
+}
+
 export class Volunteer {
     id: string;
     firstName: string;
@@ -128,6 +147,8 @@ export class Volunteer {
     description: string;
     organization: string;
     verificationStatus: string;
+    cityIds: string[];
+    activityIds: string[];
     cities: City[];
     activities: Activity[];
     social: VolunteerSocial[];
