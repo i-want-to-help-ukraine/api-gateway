@@ -29,7 +29,6 @@ export class CreateProfileInput {
 }
 
 export class UpdateProfileInput {
-    volunteerId: string;
     firstName?: Nullable<string>;
     lastName?: Nullable<string>;
     description?: Nullable<string>;

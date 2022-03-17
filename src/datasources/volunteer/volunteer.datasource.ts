@@ -377,7 +377,7 @@ export class VolunteerDatasource extends DataSource {
   }
 
   updateProfile(
-    volunteerProfileId: string,
+    authId: string,
     input: UpdateProfileInput,
   ): Promise<VolunteerDto | undefined> {
     const {
@@ -393,7 +393,7 @@ export class VolunteerDatasource extends DataSource {
     } = input;
 
     const updateProfileDto: UpdateProfileDto = {
-      id: volunteerProfileId,
+      authId,
       firstName: firstName || undefined,
       lastName: lastName || undefined,
       description: description || undefined,
