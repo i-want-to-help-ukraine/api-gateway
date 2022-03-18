@@ -16,9 +16,10 @@ export enum VerificationStatus {
 }
 
 export class CreateProfileInput {
-    authId: string;
+    authId?: Nullable<string>;
     firstName: string;
     lastName: string;
+    avatarUrl: string;
     description: string;
     organization: string;
     cityIds: string[];
@@ -31,6 +32,7 @@ export class CreateProfileInput {
 export class UpdateProfileInput {
     firstName?: Nullable<string>;
     lastName?: Nullable<string>;
+    avatarUrl?: Nullable<string>;
     description?: Nullable<string>;
     organization?: Nullable<string>;
     cityIds?: Nullable<string[]>;
@@ -145,6 +147,7 @@ export class Volunteer {
     firstName: string;
     lastName: string;
     description: string;
+    avatarUrl: string;
     organization: string;
     verificationStatus: string;
     cityIds: string[];

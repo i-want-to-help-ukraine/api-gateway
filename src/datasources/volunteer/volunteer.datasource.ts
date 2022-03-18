@@ -364,17 +364,19 @@ export class VolunteerDatasource extends DataSource {
       firstName,
       lastName,
       description,
+      avatarUrl,
       organization,
       cityIds,
       activityIds,
     } = input;
 
     const createProfileDto: CreateProfileDto = {
-      authId,
-      description,
-      organization,
+      authId: authId || '',
       firstName,
       lastName,
+      description,
+      avatarUrl,
+      organization,
       cityIds,
       activityIds,
       social: input.social.map((social) => ({
@@ -475,6 +477,7 @@ export class VolunteerDatasource extends DataSource {
       firstName,
       lastName,
       description,
+      avatarUrl,
       organization,
       verificationStatus,
       activityIds,
@@ -487,6 +490,7 @@ export class VolunteerDatasource extends DataSource {
       lastName,
       description,
       organization,
+      avatarUrl,
       verificationStatus,
       activityIds,
       cityIds,
