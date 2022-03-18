@@ -16,7 +16,6 @@ import {
   City,
   ContactProvider,
   CreateProfileInput,
-  CreateVolunteerPaymentOptionInput,
   HideProfileInput,
   PaymentProvider,
   SearchInput,
