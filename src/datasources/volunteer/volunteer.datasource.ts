@@ -280,12 +280,12 @@ export class VolunteerDatasource extends DataSource {
   async searchVolunteers(
     request: SearchInput,
   ): Promise<VolunteerSearchResponse> {
-    const { cityIds, activityIds, offset, startCursor } = request;
+    const { cityIds, activityIds, count, startCursor } = request;
 
     const rpcRequest: SearchVolunteersDto = {
       cityIds: cityIds || [],
       activityIds: activityIds || [],
-      offset,
+      offset: count,
       startCursor: startCursor || undefined,
     };
 

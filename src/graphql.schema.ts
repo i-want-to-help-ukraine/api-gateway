@@ -84,7 +84,7 @@ export class SearchInput {
     cityIds?: Nullable<string[]>;
     activityIds?: Nullable<string[]>;
     startCursor?: Nullable<string>;
-    offset: number;
+    count: number;
 }
 
 export abstract class IQuery {

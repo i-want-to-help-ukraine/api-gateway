@@ -99,7 +99,7 @@ input SearchInput {
     cityIds: [String!]
     activityIds: [String!]
     startCursor: String
-    offset: Int!
+    count: Int!
 }
 
 type VolunteerSearchResponse {
