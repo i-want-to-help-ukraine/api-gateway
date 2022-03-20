@@ -409,6 +409,7 @@ export class VolunteerDatasource extends DataSource {
       firstName,
       lastName,
       description,
+      avatarUrl,
       organization,
       cityIds,
       activityIds,
@@ -423,6 +424,7 @@ export class VolunteerDatasource extends DataSource {
       lastName: lastName || undefined,
       description: description || undefined,
       organization: organization || undefined,
+      avatarUrl: avatarUrl || undefined,
       cityIds: cityIds || [],
       activityIds: activityIds || [],
       social: {
