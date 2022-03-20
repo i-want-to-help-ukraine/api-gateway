@@ -163,11 +163,13 @@ type VolunteerSocial {
 type Activity {
     id: String!
     title: String!
+    description: String!
 }
 
 type City {
     id: String!
     title: String!
+    adminName: String!
 }
 
 type PaymentProvider {

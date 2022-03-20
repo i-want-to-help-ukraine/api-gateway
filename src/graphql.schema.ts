@@ -186,11 +186,13 @@ export class VolunteerSocial {
 export class Activity {
     id: string;
     title: string;
+    description: string;
 }
 
 export class City {
     id: string;
     title: string;
+    adminName: string;
 }
 
 export class PaymentProvider {
