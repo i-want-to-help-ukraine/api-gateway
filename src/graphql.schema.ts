@@ -20,8 +20,8 @@ export class CreateProfileInput {
     firstName: string;
     lastName: string;
     avatarUrl: string;
-    description: string;
-    organization: string;
+    description?: Nullable<string>;
+    organization?: Nullable<string>;
     cityIds: string[];
     activityIds: string[];
     social: CreateVolunteerSocialInput[];
@@ -146,9 +146,9 @@ export class Volunteer {
     id: string;
     firstName: string;
     lastName: string;
-    description: string;
+    description?: Nullable<string>;
     avatarUrl: string;
-    organization: string;
+    organization?: Nullable<string>;
     verificationStatus: string;
     cityIds: string[];
     activityIds: string[];
