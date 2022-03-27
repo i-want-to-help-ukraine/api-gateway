@@ -27,7 +27,6 @@ type Mutation {
 }
 
 input CreateProfileInput {
-    authId: String # TODO: remove this field once Auth0 integration is done
     firstName: String!
     lastName: String!
     avatarUrl: String!

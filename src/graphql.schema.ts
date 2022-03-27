@@ -16,7 +16,6 @@ export enum VerificationStatus {
 }
 
 export class CreateProfileInput {
-    authId?: Nullable<string>;
     firstName: string;
     lastName: string;
     avatarUrl: string;
@@ -110,13 +109,13 @@ export abstract class IQuery {
 
     abstract volunteerPaymentOption(input: VolunteerByIdInput): Nullable<VolunteerPaymentOption> | Promise<Nullable<VolunteerPaymentOption>>;
 
-    abstract profile(): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
+    abstract profile(authId: string): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
 }
 
 export abstract class IMutation {
-    abstract createProfile(input?: Nullable<CreateProfileInput>): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
+    abstract createProfile(authId: string, input?: Nullable<CreateProfileInput>): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
 
-    abstract updateProfile(input?: Nullable<UpdateProfileInput>): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
+    abstract updateProfile(authId: string, input?: Nullable<UpdateProfileInput>): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
 
     abstract hideProfile(input?: Nullable<HideProfileInput>): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
 }

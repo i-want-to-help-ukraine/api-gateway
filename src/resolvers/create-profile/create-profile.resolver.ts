@@ -4,6 +4,8 @@ import { VolunteerDto } from '@i-want-to-help-ukraine/protobuf/types/volunteer-s
 import { CreateProfileInput } from '../../graphql.schema';
 import { UseGuards } from '@nestjs/common';
 import { Auth0Guard } from '../../guards/auth0/auth0.guard';
+import { CurrentUser } from '../../decorators/current-user';
+import { Auth0Payload } from '../../interfaces/auth0.payload';
 
 @Resolver()
 export class CreateProfileResolver {
@@ -12,7 +14,8 @@ export class CreateProfileResolver {
   async createProfile(
     @Args('input') input: CreateProfileInput,
     @Context('dataSources') dataSources: IDatasource,
+    @CurrentUser() currentUser: Auth0Payload,
   ): Promise<VolunteerDto | undefined> {
-    return dataSources.volunteer.createVolunteer(input);
+    return dataSources.volunteer.createVolunteer(currentUser.sub, input);
   }
 }

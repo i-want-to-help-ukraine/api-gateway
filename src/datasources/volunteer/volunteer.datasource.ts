@@ -313,10 +313,10 @@ export class VolunteerDatasource extends DataSource {
   }
 
   async createVolunteer(
+    authId: string,
     input: CreateProfileInput,
   ): Promise<VolunteerDto | undefined> {
     const {
-      authId,
       firstName,
       lastName,
       description,
@@ -327,7 +327,7 @@ export class VolunteerDatasource extends DataSource {
     } = input;
 
     const createProfileDto: CreateProfileDto = {
-      authId: authId || '',
+      authId,
       firstName,
       lastName,
       description: description || undefined,

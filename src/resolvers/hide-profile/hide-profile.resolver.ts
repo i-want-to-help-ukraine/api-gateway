@@ -13,6 +13,6 @@ export class HideProfileResolver {
     @Context('dataSources') dataSources: IDatasource,
     @CurrentUser() currentUser: Auth0Payload,
   ): Promise<VolunteerDto | undefined> {
-    return dataSources.volunteer.hideProfile(currentUser.authId);
+    return dataSources.volunteer.hideProfile(currentUser.sub);
   }
 }

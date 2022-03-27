@@ -1,4 +1,5 @@
 export interface Auth0Payload {
-  token: string;
-  authId: string;
+  iss: string;
+  scope: string;
+  sub: string;
 }
