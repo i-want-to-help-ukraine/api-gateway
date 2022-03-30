@@ -21,9 +21,14 @@ import { SocialProviderResolver } from './resolvers/social-provider/social-provi
 import { VolunteerSocialResolver } from './resolvers/volunteer-social/volunteer-social.resolver';
 import { VolunteerContactResolver } from './resolvers/volunteer-contact/volunteer-contact.resolver';
 import { VolunteerPaymentOptionResolver } from './resolvers/volunteer-payment-option/volunteer-payment-option.resolver';
+import { TerminusModule } from '@nestjs/terminus';
+import { HealthCheckController } from './controllers/health-check/health-check.controller';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
+    HttpModule,
+    TerminusModule,
     ConfigModule.forRoot(),
     GraphQLModule.forRootAsync({
       imports: [ConfigModule],
@@ -51,7 +56,7 @@ import { VolunteerPaymentOptionResolver } from './resolvers/volunteer-payment-op
       inject: [ConfigService],
     }),
   ],
-  controllers: [],
+  controllers: [HealthCheckController],
   providers: [
     CitiesResolver,
     ActivitiesResolver,

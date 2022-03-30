@@ -27,12 +27,11 @@ type Mutation {
 }
 
 input CreateProfileInput {
-    authId: String # TODO: remove this field once Auth0 integration is done
     firstName: String!
     lastName: String!
     avatarUrl: String!
-    description: String!
-    organization: String!
+    description: String
+    organization: String
     cityIds: [String!]!
     activityIds: [String!]!
     social: [CreateVolunteerSocialInput!]!
@@ -123,9 +122,9 @@ type Volunteer {
     id: String!
     firstName: String!
     lastName: String!
-    description: String!
+    description: String
     avatarUrl: String!
-    organization: String!
+    organization: String
     verificationStatus: String!
     cityIds: [String!]!
     activityIds: [String!]!

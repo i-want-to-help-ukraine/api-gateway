@@ -4,19 +4,17 @@ import {
   VolunteerServiceRPCClient,
   VolunteerDto,
   VolunteerPaymentOptionDto,
-  VolunteerSocialDto,
   VolunteerContactDto,
   CreateProfileDto,
   UpdateProfileDto,
 } from '@i-want-to-help-ukraine/protobuf/types/volunteer-service';
 import * as DataLoader from 'dataloader';
-import { lastValueFrom, map } from 'rxjs';
+import { catchError, lastValueFrom, map } from 'rxjs';
 import {
   Activity,
   City,
   ContactProvider,
   CreateProfileInput,
-  HideProfileInput,
   PaymentProvider,
   SearchInput,
   SocialProvider,
@@ -28,6 +26,7 @@ import {
   VolunteerSearchResponse,
   VolunteerSocial,
 } from '../../graphql.schema';
+import { BadRequestException } from '@nestjs/common';
 
 export class VolunteerDatasource extends DataSource {
   private volunteerLoader = new DataLoader<string, VolunteerDto | null>(
@@ -127,70 +126,6 @@ export class VolunteerDatasource extends DataSource {
     );
   });
 
-  private volunteerSocialLoader = new DataLoader<
-    string,
-    VolunteerSocialDto | null
-  >(async (volunteerIds: string[]) => {
-    const volunteerSocial = await lastValueFrom(
-      this.volunteerServiceRPC
-        .getVolunteerSocial({ volunteerIds })
-        .pipe(map((response) => response.volunteerSocial)),
-    );
-
-    return volunteerIds.map(
-      (volunteerId) =>
-        volunteerSocial.find((social) => social.volunteerId === volunteerId) ||
-        null,
-    );
-  });
-
-  private volunteerPaymentOptionLoader = new DataLoader<
-    string,
-    VolunteerPaymentOption | null
-  >(async (volunteerIds: string[]) => {
-    const paymentOptions = await lastValueFrom(
-      this.volunteerServiceRPC
-        .getVolunteerPaymentOptions({ volunteerIds })
-        .pipe(
-          map((response) =>
-            response.paymentOptions.map((paymentOption) =>
-              this.mapVolunteerPaymentOption(paymentOption),
-            ),
-          ),
-        ),
-    );
-
-    return volunteerIds.map(
-      (volunteerId) =>
-        paymentOptions.find(
-          (paymentOption) => paymentOption.volunteerId === volunteerId,
-        ) || null,
-    );
-  });
-
-  private volunteerContactLoader = new DataLoader<
-    string,
-    VolunteerContact | null
-  >(async (volunteerIds: string[]) => {
-    const contacts = await lastValueFrom(
-      this.volunteerServiceRPC
-        .getVolunteerContacts({ volunteerIds })
-        .pipe(
-          map((response) =>
-            response.contacts.map((contact) =>
-              this.mapVolunteerContact(contact),
-            ),
-          ),
-        ),
-    );
-
-    return volunteerIds.map(
-      (volunteerId) =>
-        contacts.find((volunteer) => volunteer.volunteerId === volunteerId) ||
-        null,
-    );
-  });
-
   constructor(private volunteerServiceRPC: VolunteerServiceRPCClient) {
     super();
   }
@@ -199,9 +134,11 @@ export class VolunteerDatasource extends DataSource {
     return this.volunteerLoader.load(id);
   }
 
-  getActivities(ids: string[]): Promise<(Activity | Error | null)[]> {
+  async getActivities(ids: string[]): Promise<(Activity | Error | null)[]> {
     if (ids.length > 0) {
-      return this.activityLoader.loadMany(ids);
+      return (await this.activityLoader.loadMany(ids)).filter(
+        (i) => i !== null && !(i instanceof Error),
+      );
     }
 
     return lastValueFrom(
@@ -211,9 +148,11 @@ export class VolunteerDatasource extends DataSource {
     );
   }
 
-  getCities(ids: string[]): Promise<(City | Error | null)[]> {
+  async getCities(ids: string[]): Promise<(City | Error | null)[]> {
     if (ids.length > 0) {
-      return this.cityLoader.loadMany(ids);
+      return (await this.cityLoader.loadMany(ids)).filter(
+        (i) => i !== null && !(i instanceof Error),
+      );
     }
 
     return lastValueFrom(
@@ -223,11 +162,13 @@ export class VolunteerDatasource extends DataSource {
     );
   }
 
-  getSocialProviders(
+  async getSocialProviders(
     ids: string[],
   ): Promise<(SocialProvider | Error | null)[]> {
     if (ids.length > 0) {
-      return this.socialProviderLoader.loadMany(ids);
+      return (await this.socialProviderLoader.loadMany(ids)).filter(
+        (i) => i !== null && !(i instanceof Error),
+      );
     }
 
     return lastValueFrom(
@@ -241,11 +182,13 @@ export class VolunteerDatasource extends DataSource {
     return this.socialProviderLoader.load(id);
   }
 
-  getPaymentProviders(
+  async getPaymentProviders(
     ids: string[],
   ): Promise<(PaymentProvider | Error | null)[]> {
     if (ids.length > 0) {
-      return this.paymentProviderLoader.loadMany(ids);
+      return (await this.paymentProviderLoader.loadMany(ids)).filter(
+        (i) => i !== null && !(i instanceof Error),
+      );
     }
 
     return lastValueFrom(
@@ -259,11 +202,13 @@ export class VolunteerDatasource extends DataSource {
     return this.paymentProviderLoader.load(id);
   }
 
-  getContactProviders(
+  async getContactProviders(
     ids: string[],
   ): Promise<(ContactProvider | Error | null)[]> {
     if (ids.length > 0) {
-      return this.contactProviderLoader.loadMany(ids);
+      return (await this.contactProviderLoader.loadMany(ids)).filter(
+        (i) => i !== null && !(i instanceof Error),
+      );
     }
 
     return lastValueFrom(
@@ -313,9 +258,13 @@ export class VolunteerDatasource extends DataSource {
     };
   }
 
-  getVolunteerPaymentOptions(
+  async getVolunteerPaymentOptions(
     volunteerIds: string[],
   ): Promise<(VolunteerPaymentOption | Error | null)[]> {
+    // return (
+    //   await this.volunteerPaymentOptionLoader.loadMany(volunteerIds)
+    // ).filter((i) => i !== null && !(i instanceof Error));
+
     return lastValueFrom(
       this.volunteerServiceRPC
         .getVolunteerPaymentOptions({ volunteerIds })
@@ -329,9 +278,13 @@ export class VolunteerDatasource extends DataSource {
     );
   }
 
-  getVolunteerSocial(
+  async getVolunteerSocial(
     volunteerIds: string[],
   ): Promise<(VolunteerSocial | Error | null)[]> {
+    // return (await this.volunteerSocialLoader.loadMany(volunteerIds)).filter(
+    //   (i) => i !== null && !(i instanceof Error),
+    // );
+
     return lastValueFrom(
       this.volunteerServiceRPC
         .getVolunteerSocial({ volunteerIds })
@@ -339,9 +292,13 @@ export class VolunteerDatasource extends DataSource {
     );
   }
 
-  getVolunteerContacts(
+  async getVolunteerContacts(
     volunteerIds: string[],
   ): Promise<(VolunteerContact | Error | null)[]> {
+    // return (await this.volunteerContactLoader.loadMany(volunteerIds)).filter(
+    //   (i) => i !== null && !(i instanceof Error),
+    // );
+
     return lastValueFrom(
       this.volunteerServiceRPC
         .getVolunteerContacts({ volunteerIds })
@@ -356,10 +313,10 @@ export class VolunteerDatasource extends DataSource {
   }
 
   async createVolunteer(
+    authId: string,
     input: CreateProfileInput,
   ): Promise<VolunteerDto | undefined> {
     const {
-      authId,
       firstName,
       lastName,
       description,
@@ -370,12 +327,12 @@ export class VolunteerDatasource extends DataSource {
     } = input;
 
     const createProfileDto: CreateProfileDto = {
-      authId: authId || '',
+      authId,
       firstName,
       lastName,
-      description,
+      description: description || undefined,
       avatarUrl,
-      organization,
+      organization: organization || undefined,
       cityIds,
       activityIds,
       social: input.social.map((social) => ({
@@ -395,9 +352,12 @@ export class VolunteerDatasource extends DataSource {
     };
 
     return lastValueFrom(
-      this.volunteerServiceRPC
-        .createProfile(createProfileDto)
-        .pipe(map((response) => response.volunteer)),
+      this.volunteerServiceRPC.createProfile(createProfileDto).pipe(
+        map((response) => response.volunteer),
+        catchError(() => {
+          throw new BadRequestException();
+        }),
+      ),
     );
   }
 
@@ -409,6 +369,7 @@ export class VolunteerDatasource extends DataSource {
       firstName,
       lastName,
       description,
+      avatarUrl,
       organization,
       cityIds,
       activityIds,
@@ -423,6 +384,7 @@ export class VolunteerDatasource extends DataSource {
       lastName: lastName || undefined,
       description: description || undefined,
       organization: organization || undefined,
+      avatarUrl: avatarUrl || undefined,
       cityIds: cityIds || [],
       activityIds: activityIds || [],
       social: {
@@ -448,25 +410,34 @@ export class VolunteerDatasource extends DataSource {
     };
 
     return lastValueFrom(
-      this.volunteerServiceRPC
-        .updateProfile(updateProfileDto)
-        .pipe(map((response) => response.volunteer)),
+      this.volunteerServiceRPC.updateProfile(updateProfileDto).pipe(
+        map((response) => response.volunteer),
+        catchError(() => {
+          throw new BadRequestException();
+        }),
+      ),
     );
   }
 
-  hideProfile(input: HideProfileInput): Promise<VolunteerDto | undefined> {
+  hideProfile(authId: string): Promise<VolunteerDto | undefined> {
     return lastValueFrom(
-      this.volunteerServiceRPC
-        .hideProfile({ id: input.volunteerId })
-        .pipe(map((response) => response.volunteer)),
+      this.volunteerServiceRPC.hideProfile({ authId }).pipe(
+        map((response) => response.volunteer),
+        catchError(() => {
+          throw new BadRequestException();
+        }),
+      ),
     );
   }
 
   getVolunteerProfile(authId: string): Promise<VolunteerDto | undefined> {
     return lastValueFrom(
-      this.volunteerServiceRPC
-        .getVolunteerAuthProfile({ authId })
-        .pipe(map((response) => response.volunteer)),
+      this.volunteerServiceRPC.getVolunteerAuthProfile({ authId }).pipe(
+        map((response) => response.volunteer),
+        catchError(() => {
+          throw new BadRequestException();
+        }),
+      ),
     );
   }
 
