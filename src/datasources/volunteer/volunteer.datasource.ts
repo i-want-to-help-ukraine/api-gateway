@@ -26,7 +26,7 @@ import {
   VolunteerSearchResponse,
   VolunteerSocial,
 } from '../../graphql.schema';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 export class VolunteerDatasource extends DataSource {
   private volunteerLoader = new DataLoader<string, VolunteerDto | null>(
@@ -261,10 +261,6 @@ export class VolunteerDatasource extends DataSource {
   async getVolunteerPaymentOptions(
     volunteerIds: string[],
   ): Promise<(VolunteerPaymentOption | Error | null)[]> {
-    // return (
-    //   await this.volunteerPaymentOptionLoader.loadMany(volunteerIds)
-    // ).filter((i) => i !== null && !(i instanceof Error));
-
     return lastValueFrom(
       this.volunteerServiceRPC
         .getVolunteerPaymentOptions({ volunteerIds })
@@ -281,10 +277,6 @@ export class VolunteerDatasource extends DataSource {
   async getVolunteerSocial(
     volunteerIds: string[],
   ): Promise<(VolunteerSocial | Error | null)[]> {
-    // return (await this.volunteerSocialLoader.loadMany(volunteerIds)).filter(
-    //   (i) => i !== null && !(i instanceof Error),
-    // );
-
     return lastValueFrom(
       this.volunteerServiceRPC
         .getVolunteerSocial({ volunteerIds })
@@ -295,10 +287,6 @@ export class VolunteerDatasource extends DataSource {
   async getVolunteerContacts(
     volunteerIds: string[],
   ): Promise<(VolunteerContact | Error | null)[]> {
-    // return (await this.volunteerContactLoader.loadMany(volunteerIds)).filter(
-    //   (i) => i !== null && !(i instanceof Error),
-    // );
-
     return lastValueFrom(
       this.volunteerServiceRPC
         .getVolunteerContacts({ volunteerIds })
@@ -324,7 +312,18 @@ export class VolunteerDatasource extends DataSource {
       organization,
       cityIds,
       activityIds,
+      paymentOptions,
+      social,
+      contacts,
     } = input;
+
+    if (cityIds.length === 0) {
+      throw new BadRequestException('At least one city should be present');
+    }
+
+    if (activityIds.length === 0) {
+      throw new BadRequestException('At least one activity should be present');
+    }
 
     const createProfileDto: CreateProfileDto = {
       authId,
@@ -335,18 +334,18 @@ export class VolunteerDatasource extends DataSource {
       organization: organization || undefined,
       cityIds,
       activityIds,
-      social: input.social.map((social) => ({
-        url: social.url,
-        socialProviderId: social.socialProviderId,
+      social: social.map(({ url, socialProviderId }) => ({
+        url,
+        socialProviderId,
       })),
-      paymentOptions: input.paymentOptions.map((paymentOption) => ({
-        metadata: JSON.stringify(paymentOption.metadata),
-        paymentProviderId: paymentOption.paymentProviderId,
+      paymentOptions: paymentOptions.map(({ metadata, paymentProviderId }) => ({
+        metadata: JSON.stringify(metadata),
+        paymentProviderId,
       })),
-      contacts: input.contacts
-        ? input.contacts?.map((contact) => ({
-            metadata: JSON.stringify(contact.metadata),
-            contactProviderId: contact.contactProviderId,
+      contacts: contacts
+        ? contacts?.map(({ metadata, contactProviderId }) => ({
+            metadata: JSON.stringify(metadata),
+            contactProviderId,
           }))
         : [],
     };
@@ -435,7 +434,7 @@ export class VolunteerDatasource extends DataSource {
       this.volunteerServiceRPC.getVolunteerAuthProfile({ authId }).pipe(
         map((response) => response.volunteer),
         catchError(() => {
-          throw new BadRequestException();
+          throw new NotFoundException();
         }),
       ),
     );

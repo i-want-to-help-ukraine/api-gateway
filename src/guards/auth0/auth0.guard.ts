@@ -38,12 +38,10 @@ export class Auth0Guard implements CanActivate {
           cache: true,
           rateLimit: true,
           jwksRequestsPerMinute: 5,
-          jwksUri: `${this.configService.get(
-            'AUTH0_DOMAIN',
-          )}.well-known/jwks.json`,
+          jwksUri: this.configService.get('FIREBASE_JWK_URI') || '',
         }),
-        audience: this.configService.get('AUTH0_AUDIENCE'),
-        issuer: this.configService.get('AUTH0_DOMAIN'),
+        audience: this.configService.get('FIREBASE_AUDIENCE'),
+        issuer: this.configService.get('FIREBASE_ISSUER'),
         algorithms: ['RS256'],
       }),
     );

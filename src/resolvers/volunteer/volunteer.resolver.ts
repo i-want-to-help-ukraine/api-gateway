@@ -32,7 +32,9 @@ export class VolunteerResolver {
     @Parent() volunteer: VolunteerDto,
     @Context('dataSources') dataSources: IDatasource,
   ): Promise<(City | Error | null)[]> {
-    return dataSources.volunteer.getCities(volunteer.cityIds);
+    return volunteer.cityIds.length > 0
+      ? await dataSources.volunteer.getCities(volunteer.cityIds)
+      : [];
   }
 
   @ResolveField('activities')
@@ -40,7 +42,9 @@ export class VolunteerResolver {
     @Parent() volunteer: VolunteerDto,
     @Context('dataSources') dataSources: IDatasource,
   ): Promise<(Activity | Error | null)[]> {
-    return dataSources.volunteer.getActivities(volunteer.activityIds);
+    return volunteer.activityIds.length > 0
+      ? dataSources.volunteer.getActivities(volunteer.activityIds)
+      : [];
   }
 
   @ResolveField('payments')
