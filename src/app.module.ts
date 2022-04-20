@@ -24,6 +24,10 @@ import { VolunteerPaymentOptionResolver } from './resolvers/volunteer-payment-op
 import { TerminusModule } from '@nestjs/terminus';
 import { HealthCheckController } from './controllers/health-check/health-check.controller';
 import { HttpModule } from '@nestjs/axios';
+import { VerifyVolunteerResolver } from './resolvers/verify-volunteer/verify-volunteer.resolver';
+import { RejectVolunteerResolver } from './resolvers/reject-volunteer/reject-volunteer.resolver';
+import { PatchVolunteerResolver } from './resolvers/patch-volunteer/patch-volunteer.resolver';
+import { RequestedVolunteersResolver } from './resolvers/requested-volunteers/requested-volunteers.resolver';
 
 @Module({
   imports: [
@@ -74,6 +78,10 @@ import { HttpModule } from '@nestjs/axios';
     VolunteerSocialResolver,
     VolunteerContactResolver,
     VolunteerPaymentOptionResolver,
+    VerifyVolunteerResolver,
+    RejectVolunteerResolver,
+    PatchVolunteerResolver,
+    RequestedVolunteersResolver,
   ],
 })
 export class AppModule {}
