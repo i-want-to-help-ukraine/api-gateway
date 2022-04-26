@@ -86,6 +86,23 @@ export class SearchInput {
     count: number;
 }
 
+export class AddActivityInput {
+    title: string;
+    description: string;
+}
+
+export class AddPaymentProviderInput {
+    title: string;
+}
+
+export class AddSocialProviderInput {
+    title: string;
+}
+
+export class AddContactProviderInput {
+    title: string;
+}
+
 export abstract class IQuery {
     abstract cities(): Nullable<Nullable<City>[]> | Promise<Nullable<Nullable<City>[]>>;
 
@@ -109,15 +126,31 @@ export abstract class IQuery {
 
     abstract volunteerPaymentOption(input: VolunteerByIdInput): Nullable<VolunteerPaymentOption> | Promise<Nullable<VolunteerPaymentOption>>;
 
-    abstract profile(authId: string): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
+    abstract profile(): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
+
+    abstract requestedVolunteers(): Volunteer[] | Promise<Volunteer[]>;
 }
 
 export abstract class IMutation {
-    abstract createProfile(authId: string, input?: Nullable<CreateProfileInput>): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
+    abstract createProfile(input?: Nullable<CreateProfileInput>): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
 
-    abstract updateProfile(authId: string, input?: Nullable<UpdateProfileInput>): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
+    abstract updateProfile(input?: Nullable<UpdateProfileInput>): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
 
     abstract hideProfile(input?: Nullable<HideProfileInput>): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
+
+    abstract verifyVolunteer(id: string): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
+
+    abstract rejectVolunteer(id: string): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
+
+    abstract patchVolunteer(id: string, input: UpdateProfileInput): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
+
+    abstract addActivity(input: AddActivityInput): Nullable<Activity> | Promise<Nullable<Activity>>;
+
+    abstract addPaymentProvider(input: AddPaymentProviderInput): Nullable<PaymentProvider> | Promise<Nullable<PaymentProvider>>;
+
+    abstract addSocialProvider(input: AddSocialProviderInput): Nullable<SocialProvider> | Promise<Nullable<SocialProvider>>;
+
+    abstract addContactProvider(input: AddContactProviderInput): Nullable<ContactProvider> | Promise<Nullable<ContactProvider>>;
 }
 
 export class VolunteerResponse {

@@ -28,6 +28,10 @@ import { VerifyVolunteerResolver } from './resolvers/verify-volunteer/verify-vol
 import { RejectVolunteerResolver } from './resolvers/reject-volunteer/reject-volunteer.resolver';
 import { PatchVolunteerResolver } from './resolvers/patch-volunteer/patch-volunteer.resolver';
 import { RequestedVolunteersResolver } from './resolvers/requested-volunteers/requested-volunteers.resolver';
+import { AddActivityResolver } from './resolvers/add-activity/add-activity.resolver';
+import { AddPaymentProviderResolver } from './resolvers/add-payment-provider/add-payment-provider.resolver';
+import { AddSocialProviderResolver } from './resolvers/add-social-provider/add-social-provider.resolver';
+import { AddContactProviderResolver } from './resolvers/add-contact-provider/add-contact-provider.resolver';
 
 @Module({
   imports: [
@@ -82,6 +86,10 @@ import { RequestedVolunteersResolver } from './resolvers/requested-volunteers/re
     RejectVolunteerResolver,
     PatchVolunteerResolver,
     RequestedVolunteersResolver,
+    AddActivityResolver,
+    AddPaymentProviderResolver,
+    AddSocialProviderResolver,
+    AddContactProviderResolver,
   ],
 })
 export class AppModule {}

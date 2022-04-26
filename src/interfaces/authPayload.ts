@@ -1,4 +1,4 @@
-export interface Auth0Payload {
+export interface AuthPayload {
   iss: string;
   scope: string;
   sub: string;

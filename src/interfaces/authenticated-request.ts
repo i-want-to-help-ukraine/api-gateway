@@ -1,6 +1,6 @@
 import { Request } from 'express';
-import { Auth0Payload } from './auth0.payload';
+import { AuthPayload } from './authPayload';
 
 export interface AuthenticatedRequest extends Request {
-  userAuth: Auth0Payload;
+  userAuth: AuthPayload;
 }
