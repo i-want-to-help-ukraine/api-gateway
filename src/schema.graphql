@@ -18,12 +18,16 @@ type Query {
     volunteerContact(input: VolunteerByIdInput!): VolunteerContact
     volunteerPaymentOption(input: VolunteerByIdInput!): VolunteerPaymentOption
     profile: Volunteer
+    requestedVolunteers: [Volunteer!]!
 }
 
 type Mutation {
     createProfile(input: CreateProfileInput): Volunteer
     updateProfile(input: UpdateProfileInput): Volunteer
     hideProfile(input: HideProfileInput): Volunteer
+    verifyVolunteer(id: String!): Volunteer
+    rejectVolunteer(id: String!): Volunteer
+    patchVolunteer(id: String!, input: UpdateProfileInput!): Volunteer
 }
 
 input CreateProfileInput {

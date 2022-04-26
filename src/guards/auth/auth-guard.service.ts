@@ -11,7 +11,7 @@ import { expressJwtSecret } from 'jwks-rsa';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class Auth0Guard implements CanActivate {
+export class AuthGuard implements CanActivate {
   constructor(private configService: ConfigService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {

@@ -7,6 +7,10 @@ import {
   VolunteerContactDto,
   CreateProfileDto,
   UpdateProfileDto,
+  PatchVolunteerRequestDto,
+  CreateOrDeleteVolunteerSocialDto,
+  CreateOrDeleteVolunteerPaymentOptionDto,
+  CreateOrDeleteVolunteerContactDto,
 } from '@i-want-to-help-ukraine/protobuf/types/volunteer-service';
 import * as DataLoader from 'dataloader';
 import { catchError, lastValueFrom, map } from 'rxjs';
@@ -19,6 +23,7 @@ import {
   SearchInput,
   SocialProvider,
   UpdateProfileInput,
+  VerificationStatus,
   Volunteer,
   VolunteerContact,
   VolunteerPaymentOption,
@@ -27,6 +32,8 @@ import {
   VolunteerSocial,
 } from '../../graphql.schema';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { Args, Context } from '@nestjs/graphql';
+import { IDatasource } from '../datasource.interface';
 
 export class VolunteerDatasource extends DataSource {
   private volunteerLoader = new DataLoader<string, VolunteerDto | null>(
@@ -235,9 +242,7 @@ export class VolunteerDatasource extends DataSource {
     };
 
     const searchResponse = await lastValueFrom(
-      this.volunteerServiceRPC
-        .search(rpcRequest)
-        .pipe(map((response) => response)),
+      this.volunteerServiceRPC.search(rpcRequest),
     );
 
     const { volunteers, totalCount, endCursor, hasNextPage } = searchResponse;
@@ -438,6 +443,104 @@ export class VolunteerDatasource extends DataSource {
         }),
       ),
     );
+  }
+
+  verifyVolunteer(volunteerId: string): Promise<VolunteerDto | undefined> {
+    return lastValueFrom(
+      this.volunteerServiceRPC
+        .changeVolunteerStatus({
+          volunteerId,
+          status: VerificationStatus.verified,
+        })
+        .pipe(
+          map((response) => response.volunteer),
+          catchError((e) => {
+            console.error(e);
+            throw new NotFoundException();
+          }),
+        ),
+    );
+  }
+
+  rejectVolunteer(volunteerId: string): Promise<VolunteerDto | undefined> {
+    return lastValueFrom(
+      this.volunteerServiceRPC
+        .changeVolunteerStatus({
+          volunteerId,
+          status: VerificationStatus.rejected,
+        })
+        .pipe(
+          map((response) => response.volunteer),
+          catchError(() => {
+            throw new NotFoundException();
+          }),
+        ),
+    );
+  }
+
+  patchVolunteer(
+    volunteerId: string,
+    input: UpdateProfileInput,
+  ): Promise<VolunteerDto | undefined> {
+    const {
+      firstName,
+      lastName,
+      description,
+      avatarUrl,
+      organization,
+      cityIds,
+      activityIds,
+      social,
+      paymentOptions,
+      contacts,
+    } = input;
+
+    const request: PatchVolunteerRequestDto = {
+      volunteerId,
+      firstName: firstName || undefined,
+      lastName: lastName || undefined,
+      description: description || undefined,
+      avatarUrl: avatarUrl || undefined,
+      organization: organization || undefined,
+      cityIds: cityIds || [],
+      activityIds: activityIds || [],
+      social: {
+        create: social?.create || [],
+        delete: social?.delete || [],
+      },
+      paymentOptions: {
+        create:
+          paymentOptions?.create?.map((paymentOption) => ({
+            metadata: JSON.stringify(paymentOption.metadata),
+            paymentProviderId: paymentOption.paymentProviderId,
+          })) || [],
+        delete: paymentOptions?.delete || [],
+      },
+      contacts: {
+        create:
+          contacts?.create?.map((contact) => ({
+            metadata: JSON.stringify(contact.metadata),
+            contactProviderId: contact.contactProviderId,
+          })) || [],
+        delete: contacts?.delete || [],
+      },
+    };
+
+    return lastValueFrom(
+      this.volunteerServiceRPC
+        .patchVolunteer(request)
+        .pipe(map((response) => response.volunteer)),
+    );
+  }
+
+  async getRequestedVolunteers(): Promise<VolunteerDto[]> {
+    const volunteers = await lastValueFrom(
+      this.volunteerServiceRPC
+        .getRequestedVolunteers({})
+        .pipe(map((response) => response)),
+    );
+
+    return volunteers.volunteers;
   }
 
   private mapVolunteer(volunteerDto: VolunteerDto): Volunteer {
