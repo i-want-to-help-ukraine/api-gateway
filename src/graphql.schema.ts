@@ -84,6 +84,7 @@ export class SearchInput {
     activityIds?: Nullable<string[]>;
     startCursor?: Nullable<string>;
     count: number;
+    offset: number;
 }
 
 export class AddActivityInput {

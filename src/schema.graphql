@@ -107,6 +107,7 @@ input SearchInput {
     activityIds: [String!]
     startCursor: String
     count: Int!
+    offset: Int!
 }
 
 type VolunteerSearchResponse {
