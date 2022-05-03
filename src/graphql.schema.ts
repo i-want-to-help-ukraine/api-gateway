@@ -104,6 +104,23 @@ export class AddContactProviderInput {
     title: string;
 }
 
+export class AddReportInput {
+    title: string;
+    description?: Nullable<string>;
+    proofsOfPayment: AddProofOfPaymentInput[];
+}
+
+export class AddProofOfPaymentInput {
+    paidAmount: string;
+    imageUrls: string[];
+}
+
+export class GetReportRequest {
+    volunteerId: string;
+    startTimestamp?: Nullable<string>;
+    endTimestamp?: Nullable<string>;
+}
+
 export abstract class IQuery {
     abstract cities(): Nullable<Nullable<City>[]> | Promise<Nullable<Nullable<City>[]>>;
 
@@ -130,6 +147,8 @@ export abstract class IQuery {
     abstract profile(): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
 
     abstract requestedVolunteers(): Volunteer[] | Promise<Volunteer[]>;
+
+    abstract getReports(input: GetReportRequest): Nullable<VolunteerReport> | Promise<Nullable<VolunteerReport>>;
 }
 
 export abstract class IMutation {
@@ -152,6 +171,8 @@ export abstract class IMutation {
     abstract addSocialProvider(input: AddSocialProviderInput): Nullable<SocialProvider> | Promise<Nullable<SocialProvider>>;
 
     abstract addContactProvider(input: AddContactProviderInput): Nullable<ContactProvider> | Promise<Nullable<ContactProvider>>;
+
+    abstract addReport(input: AddReportInput): Nullable<VolunteerReport> | Promise<Nullable<VolunteerReport>>;
 }
 
 export class VolunteerResponse {
@@ -190,6 +211,7 @@ export class Volunteer {
     social: VolunteerSocial[];
     payments: VolunteerPaymentOption[];
     contacts?: Nullable<Nullable<VolunteerContact>[]>;
+    reports?: Nullable<VolunteerReport[]>;
 }
 
 export class VolunteerContact {
@@ -241,6 +263,20 @@ export class SocialProvider {
 export class ContactProvider {
     id: string;
     title: string;
+}
+
+export class VolunteerReport {
+    id: string;
+    title: string;
+    description?: Nullable<string>;
+    proofsOfPayment: ProofOfPayment[];
+    date?: Nullable<string>;
+}
+
+export class ProofOfPayment {
+    id: string;
+    paidAmount: string;
+    imageUrls: string[];
 }
 
 export type JSON = any;

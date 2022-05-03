@@ -32,6 +32,9 @@ import { AddActivityResolver } from './resolvers/add-activity/add-activity.resol
 import { AddPaymentProviderResolver } from './resolvers/add-payment-provider/add-payment-provider.resolver';
 import { AddSocialProviderResolver } from './resolvers/add-social-provider/add-social-provider.resolver';
 import { AddContactProviderResolver } from './resolvers/add-contact-provider/add-contact-provider.resolver';
+import { GetReportsResolver } from './resolvers/get-reports/get-reports.resolver';
+import { AddReportResolver } from './resolvers/add-report/add-report.resolver';
+import { ReportDatasource } from './datasources/volunteer/report.datasource';
 
 @Module({
   imports: [
@@ -58,6 +61,7 @@ import { AddContactProviderResolver } from './resolvers/add-contact-provider/add
 
           return {
             volunteer: new VolunteerDatasource(volunteerServiceRPC),
+            report: new ReportDatasource(volunteerServiceRPC),
           };
         },
       }),
@@ -90,6 +94,8 @@ import { AddContactProviderResolver } from './resolvers/add-contact-provider/add
     AddPaymentProviderResolver,
     AddSocialProviderResolver,
     AddContactProviderResolver,
+    GetReportsResolver,
+    AddReportResolver,
   ],
 })
 export class AppModule {}
