@@ -11,11 +11,16 @@ import {
   CreateOrDeleteVolunteerSocialDto,
   CreateOrDeleteVolunteerPaymentOptionDto,
   CreateOrDeleteVolunteerContactDto,
+  AddActivityDto,
 } from '@i-want-to-help-ukraine/protobuf/types/volunteer-service';
 import * as DataLoader from 'dataloader';
 import { catchError, lastValueFrom, map } from 'rxjs';
 import {
   Activity,
+  AddActivityInput,
+  AddContactProviderInput,
+  AddPaymentProviderInput,
+  AddSocialProviderInput,
   City,
   ContactProvider,
   CreateProfileInput,
@@ -34,6 +39,7 @@ import {
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Args, Context } from '@nestjs/graphql';
 import { IDatasource } from '../datasource.interface';
+import { response } from 'express';
 
 export class VolunteerDatasource extends DataSource {
   private volunteerLoader = new DataLoader<string, VolunteerDto | null>(
@@ -232,12 +238,13 @@ export class VolunteerDatasource extends DataSource {
   async searchVolunteers(
     request: SearchInput,
   ): Promise<VolunteerSearchResponse> {
-    const { cityIds, activityIds, count, startCursor } = request;
+    const { cityIds, activityIds, count, offset, startCursor } = request;
 
     const rpcRequest: SearchVolunteersDto = {
       cityIds: cityIds || [],
       activityIds: activityIds || [],
-      offset: count,
+      offset,
+      count,
       startCursor: startCursor || undefined,
     };
 
@@ -541,6 +548,26 @@ export class VolunteerDatasource extends DataSource {
     );
 
     return volunteers.volunteers;
+  }
+
+  addActivity(request: AddActivityInput): Promise<Activity> {
+    return lastValueFrom(this.volunteerServiceRPC.addActivity(request));
+  }
+
+  addPaymentProvider(
+    request: AddPaymentProviderInput,
+  ): Promise<PaymentProvider> {
+    return lastValueFrom(this.volunteerServiceRPC.addPaymentProvider(request));
+  }
+
+  addSocialProvider(request: AddSocialProviderInput): Promise<SocialProvider> {
+    return lastValueFrom(this.volunteerServiceRPC.addSocialProvider(request));
+  }
+
+  addContactProvider(
+    request: AddContactProviderInput,
+  ): Promise<ContactProvider> {
+    return lastValueFrom(this.volunteerServiceRPC.addContactProvider(request));
   }
 
   private mapVolunteer(volunteerDto: VolunteerDto): Volunteer {

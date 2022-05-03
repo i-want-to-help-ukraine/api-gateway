@@ -28,6 +28,10 @@ type Mutation {
     verifyVolunteer(id: String!): Volunteer
     rejectVolunteer(id: String!): Volunteer
     patchVolunteer(id: String!, input: UpdateProfileInput!): Volunteer
+    addActivity(input: AddActivityInput!): Activity
+    addPaymentProvider(input: AddPaymentProviderInput!): PaymentProvider
+    addSocialProvider(input: AddSocialProviderInput!): SocialProvider
+    addContactProvider(input: AddContactProviderInput!): ContactProvider
 }
 
 input CreateProfileInput {
@@ -103,6 +107,7 @@ input SearchInput {
     activityIds: [String!]
     startCursor: String
     count: Int!
+    offset: Int!
 }
 
 type VolunteerSearchResponse {
@@ -169,6 +174,11 @@ type Activity {
     description: String!
 }
 
+input AddActivityInput {
+    title: String!
+    description: String!
+}
+
 type City {
     id: String!
     title: String!
@@ -180,13 +190,25 @@ type PaymentProvider {
     title: String!
 }
 
+input AddPaymentProviderInput {
+    title: String!
+}
+
 type SocialProvider {
     id: String!
     title: String!
 }
 
+input AddSocialProviderInput {
+    title: String!
+}
+
 type ContactProvider {
     id: String!
+    title: String!
+}
+
+input AddContactProviderInput {
     title: String!
 }
 
