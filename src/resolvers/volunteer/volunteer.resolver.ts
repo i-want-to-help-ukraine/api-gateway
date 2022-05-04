@@ -12,6 +12,7 @@ import {
   VolunteerByIdInput,
   VolunteerContact,
   VolunteerPaymentOption,
+  VolunteerReport,
   VolunteerSocial,
 } from '../../graphql.schema';
 import { IDatasource } from '../../datasources/datasource.interface';
@@ -69,5 +70,13 @@ export class VolunteerResolver {
     @Context('dataSources') dataSources: IDatasource,
   ): Promise<(VolunteerContact | Error | null)[]> {
     return dataSources.volunteer.getVolunteerContacts([volunteer.id]);
+  }
+
+  @ResolveField('reports')
+  async reports(
+    @Parent() volunteer: VolunteerDto,
+    @Context('dataSources') dataSources: IDatasource,
+  ): Promise<VolunteerReport[]> {
+    return dataSources.report.getVolunteerReports([volunteer.id]);
   }
 }

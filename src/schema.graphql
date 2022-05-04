@@ -16,10 +16,10 @@ type Query {
     volunteer(input: VolunteerByIdInput!): Volunteer
     volunteerSocial(input: VolunteerByIdInput!): VolunteerSocial
     volunteerContact(input: VolunteerByIdInput!): VolunteerContact
+    volunteerReport(input: VolunteerByIdInput!): VolunteerReport
     volunteerPaymentOption(input: VolunteerByIdInput!): VolunteerPaymentOption
     profile: Volunteer
     requestedVolunteers: [Volunteer!]!
-    getReports(input: GetReportRequest!): VolunteerReport
 }
 
 type Mutation {
@@ -144,7 +144,7 @@ type Volunteer {
     social: [VolunteerSocial!]!
     payments: [VolunteerPaymentOption!]!
     contacts: [VolunteerContact]
-    reports: [VolunteerReport!]
+    reports: [VolunteerReport]
 }
 
 type VolunteerContact {
@@ -225,32 +225,18 @@ enum VerificationStatus {
 
 # Reports
 input AddReportInput {
-    title: String!
-    description: String
-    proofsOfPayment: [AddProofOfPaymentInput!]!
-}
-
-input AddProofOfPaymentInput {
-    paidAmount: String!
     imageUrls: [String!]!
-}
-
-input GetReportRequest {
-    volunteerId: String!
-    startTimestamp: String
-    endTimestamp: String
+    paidPositions: [String!]!
+    paidAmount: String!
+    title: String
 }
 
 type VolunteerReport {
     id: String!
-    title: String!
-    description: String
-    proofsOfPayment: [ProofOfPayment!]!
-    date: String
-}
-
-type ProofOfPayment {
-    id: String!
-    paidAmount: String!
     imageUrls: [String!]!
+    paidPositions: [String!]!
+    paidAmount: String!
+    title: String
+    publishDate: String
+    publishState: String
 }

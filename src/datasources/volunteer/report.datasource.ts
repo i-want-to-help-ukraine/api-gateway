@@ -4,11 +4,7 @@ import {
   AddReportDto,
   ReportDto,
 } from '@i-want-to-help-ukraine/protobuf/types/volunteer-service';
-import {
-  AddReportInput,
-  GetReportRequest,
-  VolunteerReport,
-} from '../../graphql.schema';
+import { AddReportInput, VolunteerReport } from '../../graphql.schema';
 import { lastValueFrom, map } from 'rxjs';
 
 export class ReportDatasource extends DataSource {
@@ -16,24 +12,14 @@ export class ReportDatasource extends DataSource {
     super();
   }
 
-  getReports(input: GetReportRequest): Promise<VolunteerReport[]> {
-    return lastValueFrom(
-      this.volunteerServiceRPC
-        .getReportsByIds({
-          volunteerIds: [input.volunteerId],
-          startTimestamp: input.startTimestamp || '',
-          endTimestamp: input.endTimestamp || '',
-        })
-        .pipe(map((response) => response.reports)),
-    );
-  }
-
   addReport(input: AddReportInput, authId: string): Promise<VolunteerReport[]> {
-    const { title, description } = input;
+    const { title, imageUrls, paidAmount, paidPositions } = input;
 
     const addReportRequest: AddReportDto = {
-      title,
-      description: description || '',
+      title: title || '',
+      imageUrls,
+      paidAmount,
+      paidPositions,
       volunteerId: authId,
     };
 
@@ -48,15 +34,37 @@ export class ReportDatasource extends DataSource {
     );
   }
 
+  getVolunteerReports(volunteerIds: string[]): Promise<VolunteerReport[]> {
+    return lastValueFrom(
+      this.volunteerServiceRPC
+        .getVolunteerReports({
+          volunteerIds,
+          startTimestamp: '',
+          endTimestamp: '',
+        })
+        .pipe(map((response) => response.reports)),
+    );
+  }
+
   private mapReport(report: ReportDto): VolunteerReport {
-    const { id, title, description, proofsOfPayment } = report;
+    const {
+      id,
+      title,
+      imageUrls,
+      paidAmount,
+      paidPositions,
+      publishState,
+      publishDate,
+    } = report;
 
     return {
       id,
       title,
-      description,
-      proofsOfPayment,
-      date: null,
+      imageUrls,
+      paidAmount,
+      paidPositions,
+      publishDate,
+      publishState,
     };
   }
 }

@@ -105,20 +105,10 @@ export class AddContactProviderInput {
 }
 
 export class AddReportInput {
-    title: string;
-    description?: Nullable<string>;
-    proofsOfPayment: AddProofOfPaymentInput[];
-}
-
-export class AddProofOfPaymentInput {
-    paidAmount: string;
     imageUrls: string[];
-}
-
-export class GetReportRequest {
-    volunteerId: string;
-    startTimestamp?: Nullable<string>;
-    endTimestamp?: Nullable<string>;
+    paidPositions: string[];
+    paidAmount: string;
+    title?: Nullable<string>;
 }
 
 export abstract class IQuery {
@@ -142,13 +132,13 @@ export abstract class IQuery {
 
     abstract volunteerContact(input: VolunteerByIdInput): Nullable<VolunteerContact> | Promise<Nullable<VolunteerContact>>;
 
+    abstract volunteerReport(input: VolunteerByIdInput): Nullable<VolunteerReport> | Promise<Nullable<VolunteerReport>>;
+
     abstract volunteerPaymentOption(input: VolunteerByIdInput): Nullable<VolunteerPaymentOption> | Promise<Nullable<VolunteerPaymentOption>>;
 
     abstract profile(): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
 
     abstract requestedVolunteers(): Volunteer[] | Promise<Volunteer[]>;
-
-    abstract getReports(input: GetReportRequest): Nullable<VolunteerReport> | Promise<Nullable<VolunteerReport>>;
 }
 
 export abstract class IMutation {
@@ -211,7 +201,7 @@ export class Volunteer {
     social: VolunteerSocial[];
     payments: VolunteerPaymentOption[];
     contacts?: Nullable<Nullable<VolunteerContact>[]>;
-    reports?: Nullable<VolunteerReport[]>;
+    reports?: Nullable<Nullable<VolunteerReport>[]>;
 }
 
 export class VolunteerContact {
@@ -267,16 +257,12 @@ export class ContactProvider {
 
 export class VolunteerReport {
     id: string;
-    title: string;
-    description?: Nullable<string>;
-    proofsOfPayment: ProofOfPayment[];
-    date?: Nullable<string>;
-}
-
-export class ProofOfPayment {
-    id: string;
-    paidAmount: string;
     imageUrls: string[];
+    paidPositions: string[];
+    paidAmount: string;
+    title?: Nullable<string>;
+    publishDate?: Nullable<string>;
+    publishState?: Nullable<string>;
 }
 
 export type JSON = any;
