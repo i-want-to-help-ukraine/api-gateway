@@ -111,6 +111,15 @@ export class AddReportInput {
     title?: Nullable<string>;
 }
 
+export class GetBackofficeTokenInput {
+    authId: string;
+    authCode: string;
+}
+
+export class RefreshBackofficeTokenInput {
+    refreshToken: string;
+}
+
 export abstract class IQuery {
     abstract cities(): Nullable<Nullable<City>[]> | Promise<Nullable<Nullable<City>[]>>;
 
@@ -139,6 +148,10 @@ export abstract class IQuery {
     abstract profile(): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
 
     abstract requestedVolunteers(): Volunteer[] | Promise<Volunteer[]>;
+
+    abstract getBackofficeToken(input: GetBackofficeTokenInput): BackofficeToken | Promise<BackofficeToken>;
+
+    abstract refreshBackofficeToken(input: RefreshBackofficeTokenInput): BackofficeToken | Promise<BackofficeToken>;
 }
 
 export abstract class IMutation {
@@ -263,6 +276,11 @@ export class VolunteerReport {
     title?: Nullable<string>;
     publishDate?: Nullable<string>;
     publishState?: Nullable<string>;
+}
+
+export class BackofficeToken {
+    accessToken: string;
+    refreshToken: string;
 }
 
 export type JSON = any;

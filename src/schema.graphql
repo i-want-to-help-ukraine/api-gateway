@@ -20,6 +20,8 @@ type Query {
     volunteerPaymentOption(input: VolunteerByIdInput!): VolunteerPaymentOption
     profile: Volunteer
     requestedVolunteers: [Volunteer!]!
+    getBackofficeToken(input: GetBackofficeTokenInput!): BackofficeToken!
+    refreshBackofficeToken(input: RefreshBackofficeTokenInput!): BackofficeToken!
 }
 
 type Mutation {
@@ -239,4 +241,19 @@ type VolunteerReport {
     title: String
     publishDate: String
     publishState: String
+}
+
+# Backoffice token
+input GetBackofficeTokenInput {
+    authId: String!
+    authCode: String!
+}
+
+input RefreshBackofficeTokenInput {
+    refreshToken: String!
+}
+
+type BackofficeToken {
+    accessToken: String!
+    refreshToken: String!
 }
