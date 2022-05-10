@@ -19,6 +19,7 @@ type Query {
     volunteerPaymentOption(input: VolunteerByIdInput!): VolunteerPaymentOption
     profile: Volunteer
     requestedVolunteers: [Volunteer!]!
+    backofficeToken(input: String): BackofficeTokenResponse
 }
 
 type Mutation {
@@ -218,4 +219,8 @@ enum VerificationStatus {
     rejected,
     verified,
     banned
+}
+
+type BackofficeTokenResponse {
+    token: String!
 }

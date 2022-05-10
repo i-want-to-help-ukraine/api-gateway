@@ -32,12 +32,22 @@ import { AddActivityResolver } from './resolvers/add-activity/add-activity.resol
 import { AddPaymentProviderResolver } from './resolvers/add-payment-provider/add-payment-provider.resolver';
 import { AddSocialProviderResolver } from './resolvers/add-social-provider/add-social-provider.resolver';
 import { AddContactProviderResolver } from './resolvers/add-contact-provider/add-contact-provider.resolver';
+import { BackofficeTokenResolver } from './resolvers/backoffice-token/backoffice-token.resolver';
+import { BackofficeAuthService } from './services/backoffice-auth/backoffice-auth.service';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
     HttpModule,
     TerminusModule,
     ConfigModule.forRoot(),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get('BACKOFFICE_AUTH_SECRET'),
+      }),
+      inject: [ConfigService],
+    }),
     GraphQLModule.forRootAsync({
       imports: [ConfigModule],
       driver: ApolloDriver,
@@ -90,6 +100,8 @@ import { AddContactProviderResolver } from './resolvers/add-contact-provider/add
     AddPaymentProviderResolver,
     AddSocialProviderResolver,
     AddContactProviderResolver,
+    BackofficeTokenResolver,
+    BackofficeAuthService,
   ],
 })
 export class AppModule {}
