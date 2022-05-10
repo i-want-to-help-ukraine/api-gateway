@@ -8,10 +8,6 @@ import {
   CreateProfileDto,
   UpdateProfileDto,
   PatchVolunteerRequestDto,
-  CreateOrDeleteVolunteerSocialDto,
-  CreateOrDeleteVolunteerPaymentOptionDto,
-  CreateOrDeleteVolunteerContactDto,
-  AddActivityDto,
 } from '@i-want-to-help-ukraine/protobuf/types/volunteer-service';
 import * as DataLoader from 'dataloader';
 import { catchError, lastValueFrom, map } from 'rxjs';
@@ -37,9 +33,6 @@ import {
   VolunteerSocial,
 } from '../../graphql.schema';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { Args, Context } from '@nestjs/graphql';
-import { IDatasource } from '../datasource.interface';
-import { response } from 'express';
 
 export class VolunteerDatasource extends DataSource {
   private volunteerLoader = new DataLoader<string, VolunteerDto | null>(

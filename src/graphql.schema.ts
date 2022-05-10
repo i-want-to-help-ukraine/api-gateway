@@ -130,6 +130,8 @@ export abstract class IQuery {
     abstract profile(): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
 
     abstract requestedVolunteers(): Volunteer[] | Promise<Volunteer[]>;
+
+    abstract backofficeToken(input?: Nullable<string>): Nullable<BackofficeTokenResponse> | Promise<Nullable<BackofficeTokenResponse>>;
 }
 
 export abstract class IMutation {
@@ -241,6 +243,10 @@ export class SocialProvider {
 export class ContactProvider {
     id: string;
     title: string;
+}
+
+export class BackofficeTokenResponse {
+    token: string;
 }
 
 export type JSON = any;

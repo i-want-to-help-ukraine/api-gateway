@@ -25,3 +25,18 @@ export function getVolunteerPackage(url: string): ClientGrpcProxy {
     },
   });
 }
+
+export function getBackofficeAuthPackage(url: string): ClientGrpcProxy {
+  return ClientProxyFactory.create({
+    transport: Transport.GRPC,
+    options: {
+      package: 'AuthServicePackage',
+      protoPath: join(
+        process.cwd(),
+        './node_modules/@i-want-to-help-ukraine/protobuf/schema/auth-service.proto',
+      ),
+      url,
+      loader,
+    },
+  });
+}

@@ -3,11 +3,12 @@ import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../../guards/auth/auth-guard.service';
 import { AddPaymentProviderInput, PaymentProvider } from '../../graphql.schema';
 import { IDatasource } from '../../datasources/datasource.interface';
+import { BackofficeAuthGuard } from '../../guards/backoffice/backoffice-auth.guard';
 
 @Resolver()
 export class AddPaymentProviderResolver {
   @Mutation('addPaymentProvider')
-  @UseGuards(AuthGuard)
+  @UseGuards(BackofficeAuthGuard)
   async addPaymentProvider(
     @Args('input') input: AddPaymentProviderInput,
     @Context('dataSources') dataSources: IDatasource,
