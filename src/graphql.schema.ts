@@ -71,6 +71,19 @@ export class CreateVolunteerPaymentOptionInput {
     paymentProviderId: string;
 }
 
+export class UpdateProfileV2Input {
+    firstName?: Nullable<string>;
+    lastName?: Nullable<string>;
+    avatarUrl?: Nullable<string>;
+    description?: Nullable<string>;
+    organization?: Nullable<string>;
+    cityIds?: Nullable<string[]>;
+    activityIds?: Nullable<string[]>;
+    social?: Nullable<CreateVolunteerSocialInput[]>;
+    contacts?: Nullable<CreateVolunteerContactInput[]>;
+    paymentOptions?: Nullable<CreateVolunteerPaymentOptionInput[]>;
+}
+
 export class HideProfileInput {
     volunteerId: string;
 }
@@ -139,13 +152,15 @@ export abstract class IMutation {
 
     abstract updateProfile(input?: Nullable<UpdateProfileInput>): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
 
+    abstract updateProfileV2(input?: Nullable<UpdateProfileV2Input>): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
+
     abstract hideProfile(input?: Nullable<HideProfileInput>): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
 
     abstract verifyVolunteer(id: string): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
 
     abstract rejectVolunteer(id: string): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
 
-    abstract patchVolunteer(id: string, input: UpdateProfileInput): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
+    abstract patchVolunteer(id: string, input: UpdateProfileV2Input): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
 
     abstract addActivity(input: AddActivityInput): Nullable<Activity> | Promise<Nullable<Activity>>;
 

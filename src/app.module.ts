@@ -35,6 +35,7 @@ import { AddContactProviderResolver } from './resolvers/add-contact-provider/add
 import { BackofficeTokenResolver } from './resolvers/backoffice-token/backoffice-token.resolver';
 import { BackofficeAuthService } from './services/backoffice-auth/backoffice-auth.service';
 import { JwtModule } from '@nestjs/jwt';
+import { UpdateProfileV2Resolver } from './resolvers/update-profile-v2/update-profile-v2.resolver';
 
 @Module({
   imports: [
@@ -102,6 +103,7 @@ import { JwtModule } from '@nestjs/jwt';
     AddContactProviderResolver,
     BackofficeTokenResolver,
     BackofficeAuthService,
+    UpdateProfileV2Resolver,
   ],
 })
 export class AppModule {}

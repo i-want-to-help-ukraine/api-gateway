@@ -6,29 +6,38 @@ schema {
 }
 
 type Query {
+    # Entities
     cities: [City]
     activities: [Activity]
     socialProvider: SocialProvider
     socialProviders: [SocialProvider]
     paymentProviders: [PaymentProvider]
     contactProviders: [ContactProvider]
+
+    # Volunteer
     volunteersSearch(input: SearchInput): VolunteerSearchResponse
     volunteer(input: VolunteerByIdInput!): Volunteer
     volunteerSocial(input: VolunteerByIdInput!): VolunteerSocial
     volunteerContact(input: VolunteerByIdInput!): VolunteerContact
     volunteerPaymentOption(input: VolunteerByIdInput!): VolunteerPaymentOption
     profile: Volunteer
+
+    # Backoffice
     requestedVolunteers: [Volunteer!]!
     backofficeToken(input: String): BackofficeTokenResponse
 }
 
 type Mutation {
+    # Volunteer profile
     createProfile(input: CreateProfileInput): Volunteer
     updateProfile(input: UpdateProfileInput): Volunteer
+    updateProfileV2(input: UpdateProfileV2Input): Volunteer
     hideProfile(input: HideProfileInput): Volunteer
+
+    # Backoffice
     verifyVolunteer(id: String!): Volunteer
     rejectVolunteer(id: String!): Volunteer
-    patchVolunteer(id: String!, input: UpdateProfileInput!): Volunteer
+    patchVolunteer(id: String!, input: UpdateProfileV2Input!): Volunteer
     addActivity(input: AddActivityInput!): Activity
     addPaymentProvider(input: AddPaymentProviderInput!): PaymentProvider
     addSocialProvider(input: AddSocialProviderInput!): SocialProvider
@@ -89,6 +98,20 @@ input CreateOrDeleteVolunteerPaymentOptionInput {
 input CreateVolunteerPaymentOptionInput {
     metadata: JSON!
     paymentProviderId: String!
+}
+
+# Update profile v2
+input UpdateProfileV2Input {
+    firstName: String
+    lastName: String
+    avatarUrl: String
+    description: String
+    organization: String
+    cityIds: [String!]
+    activityIds: [String!]
+    social: [CreateVolunteerSocialInput!]
+    contacts: [CreateVolunteerContactInput!]
+    paymentOptions: [CreateVolunteerPaymentOptionInput!]
 }
 
 input HideProfileInput {

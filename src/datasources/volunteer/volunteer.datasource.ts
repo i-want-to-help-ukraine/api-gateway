@@ -7,7 +7,7 @@ import {
   VolunteerContactDto,
   CreateProfileDto,
   UpdateProfileDto,
-  PatchVolunteerRequestDto,
+  UpdateProfileV2Dto,
 } from '@i-want-to-help-ukraine/protobuf/types/volunteer-service';
 import * as DataLoader from 'dataloader';
 import { catchError, lastValueFrom, map } from 'rxjs';
@@ -24,6 +24,7 @@ import {
   SearchInput,
   SocialProvider,
   UpdateProfileInput,
+  UpdateProfileV2Input,
   VerificationStatus,
   Volunteer,
   VolunteerContact,
@@ -423,6 +424,55 @@ export class VolunteerDatasource extends DataSource {
     );
   }
 
+  updateProfileV2(
+    authId: string,
+    input: UpdateProfileV2Input,
+  ): Promise<VolunteerDto | undefined> {
+    const {
+      firstName,
+      lastName,
+      description,
+      avatarUrl,
+      organization,
+      cityIds,
+      activityIds,
+      social,
+      paymentOptions,
+      contacts,
+    } = input;
+
+    const updateProfileDto: UpdateProfileV2Dto = {
+      authId,
+      firstName: firstName || undefined,
+      lastName: lastName || undefined,
+      description: description || undefined,
+      organization: organization || undefined,
+      avatarUrl: avatarUrl || undefined,
+      cityIds: cityIds || [],
+      activityIds: activityIds || [],
+      social: social || [],
+      paymentOptions:
+        paymentOptions?.map((paymentOption) => ({
+          metadata: JSON.stringify(paymentOption.metadata),
+          paymentProviderId: paymentOption.paymentProviderId,
+        })) || [],
+      contacts:
+        contacts?.map((contact) => ({
+          metadata: JSON.stringify(contact.metadata),
+          contactProviderId: contact.contactProviderId,
+        })) || [],
+    };
+
+    return lastValueFrom(
+      this.volunteerServiceRPC.updateProfileV2(updateProfileDto).pipe(
+        map((response) => response.volunteer),
+        catchError(() => {
+          throw new BadRequestException();
+        }),
+      ),
+    );
+  }
+
   hideProfile(authId: string): Promise<VolunteerDto | undefined> {
     return lastValueFrom(
       this.volunteerServiceRPC.hideProfile({ authId }).pipe(
@@ -475,61 +525,6 @@ export class VolunteerDatasource extends DataSource {
             throw new NotFoundException();
           }),
         ),
-    );
-  }
-
-  patchVolunteer(
-    volunteerId: string,
-    input: UpdateProfileInput,
-  ): Promise<VolunteerDto | undefined> {
-    const {
-      firstName,
-      lastName,
-      description,
-      avatarUrl,
-      organization,
-      cityIds,
-      activityIds,
-      social,
-      paymentOptions,
-      contacts,
-    } = input;
-
-    const request: PatchVolunteerRequestDto = {
-      volunteerId,
-      firstName: firstName || undefined,
-      lastName: lastName || undefined,
-      description: description || undefined,
-      avatarUrl: avatarUrl || undefined,
-      organization: organization || undefined,
-      cityIds: cityIds || [],
-      activityIds: activityIds || [],
-      social: {
-        create: social?.create || [],
-        delete: social?.delete || [],
-      },
-      paymentOptions: {
-        create:
-          paymentOptions?.create?.map((paymentOption) => ({
-            metadata: JSON.stringify(paymentOption.metadata),
-            paymentProviderId: paymentOption.paymentProviderId,
-          })) || [],
-        delete: paymentOptions?.delete || [],
-      },
-      contacts: {
-        create:
-          contacts?.create?.map((contact) => ({
-            metadata: JSON.stringify(contact.metadata),
-            contactProviderId: contact.contactProviderId,
-          })) || [],
-        delete: contacts?.delete || [],
-      },
-    };
-
-    return lastValueFrom(
-      this.volunteerServiceRPC
-        .patchVolunteer(request)
-        .pipe(map((response) => response.volunteer)),
     );
   }
 
