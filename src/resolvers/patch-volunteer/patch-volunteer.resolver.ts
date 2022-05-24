@@ -10,10 +10,10 @@ export class PatchVolunteerResolver {
   @Mutation('patchVolunteer')
   @UseGuards(BackofficeAuthGuard)
   async patchVolunteer(
-    @Args('id') id: string,
+    @Args('authId') authId: string,
     @Args('input') input: UpdateProfileV2Input,
     @Context('dataSources') dataSources: IDatasource,
   ): Promise<VolunteerDto | undefined> {
-    return dataSources.volunteer.updateProfileV2(id, input);
+    return dataSources.volunteer.updateProfileV2(authId, input);
   }
 }

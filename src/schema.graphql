@@ -37,7 +37,7 @@ type Mutation {
     # Backoffice
     verifyVolunteer(id: String!): Volunteer
     rejectVolunteer(id: String!): Volunteer
-    patchVolunteer(id: String!, input: UpdateProfileV2Input!): Volunteer
+    patchVolunteer(authId: String!, input: UpdateProfileV2Input!): Volunteer
     addActivity(input: AddActivityInput!): Activity
     addPaymentProvider(input: AddPaymentProviderInput!): PaymentProvider
     addSocialProvider(input: AddSocialProviderInput!): SocialProvider

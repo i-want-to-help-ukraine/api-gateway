@@ -160,7 +160,7 @@ export abstract class IMutation {
 
     abstract rejectVolunteer(id: string): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
 
-    abstract patchVolunteer(id: string, input: UpdateProfileV2Input): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
+    abstract patchVolunteer(authId: string, input: UpdateProfileV2Input): Nullable<Volunteer> | Promise<Nullable<Volunteer>>;
 
     abstract addActivity(input: AddActivityInput): Nullable<Activity> | Promise<Nullable<Activity>>;
 
