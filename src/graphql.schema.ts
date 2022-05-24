@@ -144,7 +144,7 @@ export abstract class IQuery {
 
     abstract requestedVolunteers(): Volunteer[] | Promise<Volunteer[]>;
 
-    abstract backofficeToken(input?: Nullable<string>): Nullable<BackofficeTokenResponse> | Promise<Nullable<BackofficeTokenResponse>>;
+    abstract backofficeToken(backofficeAuthId: string): Nullable<BackofficeTokenResponse> | Promise<Nullable<BackofficeTokenResponse>>;
 }
 
 export abstract class IMutation {

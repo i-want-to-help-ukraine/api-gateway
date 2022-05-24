@@ -24,7 +24,7 @@ type Query {
 
     # Backoffice
     requestedVolunteers: [Volunteer!]!
-    backofficeToken(input: String): BackofficeTokenResponse
+    backofficeToken(backofficeAuthId: String!): BackofficeTokenResponse
 }
 
 type Mutation {

@@ -9,8 +9,8 @@ export class BackofficeTokenResolver {
 
   @Query('backofficeToken')
   @UseGuards(BackofficeUserGuard)
-  async backofficeToken(@Args('input') authId: string) {
-    const token = this.backofficeAuthService.getToken(authId);
+  async backofficeToken(@Args('backofficeAuthId') backofficeAuthId: string) {
+    const token = this.backofficeAuthService.getToken(backofficeAuthId);
 
     return {
       token,

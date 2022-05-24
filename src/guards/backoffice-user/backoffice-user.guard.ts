@@ -17,9 +17,9 @@ export class BackofficeUserGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const ctx = GqlExecutionContext.create(context);
-    const { input } = ctx.getArgs();
+    const { backofficeAuthId } = ctx.getArgs();
 
-    const user = await this.backofficeService.getUser(input);
+    const user = await this.backofficeService.getUser(backofficeAuthId);
 
     if (user === undefined) {
       throw new UnauthorizedException();
